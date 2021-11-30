@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <canvas id="c" width="300" height="300"></canvas>
+
+    <script>
+      (function () {
+        drawKoch(
+          "canvas",
+          { x: 10, y: 10 },
+          { x: 290, y: 10 },
+          3,
+          { color: "red", width: 3 },
+          50
+        );
+
+        function drawKoch(canvas_id, p1, p2, n, line_config, interval_ms) {
+          var canvas = document.getElementById(canvas_id);
+          if (!canvas) {
+            console.log("not canvas object.");
+            return false;
+          }
+          var c = canvas.getContext("2d");
+          c.translate(0, canvas.height);
+          c.scale(1, -1);
+
+          var i = 0;
+          Koch(p1, p2, n);
+
+          /*コッホ曲線の定義
+          http://judge.u-aizu.ac.jp/onlinejudge/commentary.jsp?id=ALDS1_5_C
+          */
+          function Koch(p1, p2, n) {
+            if (n <= 0) {
+              setTimeout(function () {
+                line(p1, p2, line_config);
+              }, i * interval_ms);
+              i++;
+              return false;
+            }
+
+            var w = {
+              x: (p2.x - p1.x) / 3,
+              y: (p2.y - p1.y) / 3,
+            };
+
+            var s = {
+              x: p1.x + w.x,
+              y: p1.y + w.y,
+            };
+            var t = {
+              x: p2.x - w.x,
+              y: p2.y - w.y,
+            };
+            var u = {
+              x: rotate({ x: t.x - s.x, y: t.y - s.y }, 60).x + s.x,
+              y: rotate({ x: t.x - s.x, y: t.y - s.y }, 60).y + s.y,
+            };
+
+            Koch(p1, s, n - 1);
+            Koch(s, u, n - 1);
+            Koch(u, t, n - 1);
+            Koch(t, p2, n - 1);
+
+            //独自関数line()の定義
+            function line(p1, p2, line_config) {
+              c.beginPath();
+              c.moveTo(Math.floor(p1.x), Math.floor(p1.y));
+              c.lineTo(Math.floor(p2.x), Math.floor(p2.y));
+              if (line_config.width) {
+                c.lineWidth = line_config.width;
+              }
+              if (line_config.color) {
+                c.strokeStyle = line_config.color;
+              }
+              c.stroke();
+            }
+
+            function deg2rad(deg) {
+              return (deg * Math.PI) / 180;
+            }
+
+            function rotate(r, deg) {
+              return {
+                x: r.x * Math.cos(deg2rad(deg)) - r.y * Math.sin(deg2rad(deg)),
+                y: r.x * Math.sin(deg2rad(deg)) + r.y * Math.cos(deg2rad(deg)),
+              };
+            }
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

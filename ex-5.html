@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <style type="text/css">
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+
+  <script type="application/javascript">
+    // HTMLエレメントの<canvas>を取得
+    var c = document.getElementById("c");
+
+    // <canvas>の大きさをブラウザのサイズに合わせる
+    var w = (c.width = window.innerWidth);
+    var h = (c.height = window.innerHeight);
+
+    // <canvas>の中心点
+    var cx = w / 2;
+    var cy = h / 2;
+
+    // canvasコンテキスト
+    var ctx = c.getContext("2d");
+
+    // 黒で塗りつぶす
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, w, h);
+
+    // 動きを制御するオプション
+    var opts = {
+      // 移動する六角形の一辺の長さ
+      len: 100,
+
+      // 同時に存在するLineの数
+      count: 100,
+
+      // 次の目的地に到達するための時間、大きいほど移動速度は遅くなる
+      baseTime: 50,
+
+      // ランダムな時間を作る係数
+      addedTime: 50,
+
+      // ランダム値がdieChanceよりも小さかったらLineを初期化する
+      dieChance: 0.05,
+
+      // 2x2の四角形を滲ませて表示するための係数
+      // 徐々に大きくなって目的地にたどり着いたときにこの値になる
+      shadow: 5,
+    };
+
+    // ループごとに1増える
+    var tick = 0;
+
+    // Lineオブジェクトを格納する配列
+    var lines = [];
+
+    // 初期化条件
+    var dieX = w / 2 / opts.len;
+    var dieY = h / 2 / opts.len;
+
+    // dieX, dieYのサイズをコンソールで確認
+    // console.table({ dieX: dieX, dieY: dieY });
+
+    // 角度、６角形を作るため60度とする
+    var baseRad = (Math.PI * 2) / 6;
+
+    // アニメーションハンドラ
+    var animationHandler = {
+      id: 0,
+    };
+
+    /**
+     * アニメーションループ
+     */
+     function loop() {
+      // アニメーション開始、再帰的にloop()を呼び出す
+      animationHandler.id = window.requestAnimationFrame(loop);
+
+      ++tick;
+
+      // デフォルト。新たな図形をすでにあるCanvasの内容の上に描く
+      ctx.globalCompositeOperation = "source-over";
+
+      // アルファ値を0.05で透過させた黒っぽい色で上書きする
+      // こうすることで古いのを徐々に消す
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "rgba(12, 12, 12, 0.05)";
+      ctx.fillRect(0, 0, w, h);
+
+      // 新たな図形と描画先Canvasの内容が重なる部分は、カラー値が加算される
+      // これにより重なった部分が光る
+      ctx.globalCompositeOperation = "lighter";
+
+      // 上限であるopts.countに到達するまでLinesオブジェクトを増やしていく
+      if (lines.length < opts.count) {
+        lines.push(new Line());
+      }
+
+      // 全てのLineオブジェクトに関してstep()を実行して描画する
+      lines.map(function (line) {
+        line.step();
+      });
+    }
+
+    class Line {
+      constructor() {
+        this.reset();
+      }
+
+      /**
+       * オブジェクトを初期化する
+       */
+      reset() {
+        // 現在の位置、この値は目的値に到達するまで、すなわちtargetTime経過するまで変わらない
+        this.x = 0;
+        this.y = 0;
+
+        // 進む角度
+        this.rad = 0;
+
+        // 次の目標点への変化量
+        this.addedX = 0;
+        this.addedY = 0;
+
+        // 積算時間
+        this.cumulativeTime = 0;
+
+        // reset()して原点に戻るたびに色を変える
+        // 色は経過時間をもとにして変化させる
+        // hsl(色相, 彩度, 輝度)
+        //   第１引数は色相で0～360を取る。時間を表すtick値はすごい勢いで増加するので0.5を乗じた値にする。hueは置き換えるプレースホルダ
+        //   第２引数は彩度で100%が純色
+        //   第３引数は輝度で0%～100%をとる。50%が純色
+        this.color = "hsl(hue, 100%, 50%)";
+        this.color = this.color.replace("hue", tick * 0.5);
+
+        // 最初の行き先を決める
+        this.setDestination();
+      }
+
+      /**
+       * 目的地を設定
+       */
+      setDestination() {
+        // 現在の位置を設定
+        this.x += this.addedX;
+        this.y += this.addedY;
+
+        // 経過時間
+        this.time = 0;
+
+        // ターゲットタイム経過したら、すなわち目的地についたら再度setDestination()する
+        // ターゲットタイムにはランダム要素を加えることで移動速度がバラバラになる
+        this.targetTime = opts.baseTime + opts.addedTime * Math.random();
+
+        // 向きを変えるために+60度 or -60度をランダムに加える
+        this.rad += baseRad * (Math.random() < 0.5 ? 1 : -1);
+
+        // 行き先のベクトルをx成分とy成分に分ける
+        this.addedX = Math.cos(this.rad);
+        this.addedY = Math.sin(this.rad);
+
+        // 一定の確率で初期値に戻す
+        if (
+          Math.random() < opts.dieChance ||
+          this.x > dieX ||
+          this.x < -dieX ||
+          this.y > dieY ||
+          this.y < -dieY
+        ) {
+          this.reset();
+        }
+      }
+
+      /**
+       * ループ中の各ステップで円を描画
+       */
+      step() {
+        ++this.time;
+        ++this.cumulativeTime;
+
+        // ターゲット点に到達したら方向を変える
+        if (this.time >= this.targetTime) {
+          this.setDestination();
+        }
+
+        // ターゲットタイムまでどのくらいの場所にいるか
+        var prop = this.time / this.targetTime;
+
+        // ease処理
+        // sinカーブで0～1の値を取る
+        var wave = Math.sin((prop * Math.PI) / 2);
+
+        // 移動量
+        // ターゲットタイムに到達するとwaveは1になる
+        var dx = this.addedX * wave;
+        var dy = this.addedY * wave;
+
+        // シャドーをつけて四角形を滲ませる
+        // 目的地に近づくほど滲む
+        // shadowBlur属性は、影のぼかし効果のレベルを指定、0以上の数値を指定、レベルであってピクセル数ではない
+        ctx.shadowBlur = wave * opts.shadow;
+
+        // canvasコンテキストのスタイルを設定して
+        ctx.fillStyle = ctx.shadowColor = this.color;
+
+        // 2x2の四角形を描画する
+        ctx.fillRect(
+          cx + (this.x + dx) * opts.len,
+          cy + (this.y + dy) * opts.len,
+          2,
+          2
+        );
+      }
+    }
+
+
+    // ブラウザのサイズが変更になった場合、グローバル変数をセットし直す
+    window.addEventListener("resize", function () {
+      w = c.width = window.innerWidth;
+      h = c.height = window.innerHeight;
+
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, w, h);
+
+      cx = w / 2;
+      cy = h / 2;
+
+      dieX = w / 2 / opts.len;
+      dieY = h / 2 / opts.len;
+    });
+
+    // クリックしたらアニメーションを停止
+    window.onclick = function () {
+      if (animationHandler.id) {
+        window.cancelAnimationFrame(animationHandler.id);
+        animationHandler.id = 0;
+      } else {
+        loop();
+      }
+    };
+
+    loop();
+  </script>
+</html>

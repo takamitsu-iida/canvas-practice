@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+
+    <style type="text/css">
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+
+  <script type="application/javascript">
+    // HTMLエレメントの<canvas>を取得
+    var c = document.getElementById("c");
+
+    // <canvas>の大きさをブラウザのサイズに合わせる
+    var w = (c.width = window.innerWidth);
+    var h = (c.height = window.innerHeight);
+
+    // <canvas>の中心点
+    var cx = w / 2;
+    var cy = h / 2;
+
+    // canvasコンテキスト
+    var ctx = c.getContext("2d");
+
+    // 黒で塗りつぶす
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, w, h);
+
+    // 動きを制御するオプション
+    var opts = {
+      // 同時に存在するCircleの数
+      count: 100,
+    };
+
+    // ループごとに1増える
+    var tick = 0;
+
+    // Circleオブジェクトを格納する配列
+    var circles = [];
+
+    // 360度
+    const PI2 = Math.PI * 2;
+
+    // アニメーションハンドラ
+    var animationHandler = {
+      id: 0,
+    };
+
+    /**
+     * アニメーションループ
+     */
+    function loop() {
+      // アニメーション開始、再帰的にloop()を呼び出す
+      animationHandler.id = window.requestAnimationFrame(loop);
+
+      // アルファ値を0.1で透過させた黒で上書きする
+      // こうすることで古いのを徐々に消す
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, w, h);
+
+      // 新たな図形と描画先Canvasの内容が重なる部分は、カラー値が加算される
+      // これにより重なった部分が光る
+      ctx.globalCompositeOperation = "lighter";
+
+      // 上限であるopts.countに到達するまでCircleオブジェクトを増やしていく
+      if (circles.length < opts.count) {
+        circles.push(new Circle());
+      }
+
+      // 全てのCircleオブジェクトに関してstep()を実行して描画する
+      circles.map(function (circle) {
+        circle.step();
+      });
+    }
+
+    class Circle {
+      constructor() {
+        this.reset();
+      }
+
+      /**
+       * オブジェクトを初期化する
+       */
+      reset() {
+        // 現在の位置座標を画面中央にする
+        this.x = cx;
+        this.y = cy;
+
+        // 移動速度をランダムに決める
+        this.speedX = Math.random() * 8.0 - 4.0;
+        this.speedY = Math.random() * 8.0 - 4.0;
+
+        // 円の半径をランダムに決める
+        this.radius = Math.random() * 8.0 + 1.0;
+
+        // 色(RGB)をランダムに決める
+        this.color = "rgb(R, G, B)";
+        this.color = this.color.replace("R", Math.floor(Math.random() * 96));
+        this.color = this.color.replace("G", Math.floor(Math.random() * 96));
+        this.color = this.color.replace("B", Math.floor(Math.random() * 96));
+      }
+
+      /**
+       * ループ中の各ステップで円を描画
+       */
+      step() {
+        // 位置を更新
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        // 画面の端までいったら初期値に戻す
+        if (this.x < 0 || this.x > w) {
+          this.reset();
+        }
+
+        if (this.y < 0 || this.y > h) {
+          this.reset();
+        }
+
+        // 更新した座標で円を描く
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.radius, 0, PI2, true);
+        ctx.fill();
+      }
+    }
+
+    // ブラウザのサイズが変更になった場合、グローバル変数をセットし直す
+    window.addEventListener("resize", function () {
+      w = c.width = window.innerWidth;
+      h = c.height = window.innerHeight;
+
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, w, h);
+
+      cx = w / 2;
+      cy = h / 2;
+    });
+
+    // クリックしたらアニメーションを停止
+    window.onclick = function () {
+      if (animationHandler.id) {
+        window.cancelAnimationFrame(animationHandler.id);
+        animationHandler.id = 0;
+      } else {
+        loop();
+      }
+    };
+
+    loop();
+  </script>
+</html>
