@@ -18,23 +18,10 @@
   </body>
 
   <script type="application/javascript">
-    // HTMLエレメントの<canvas>を取得
-    var c = document.getElementById("c");
 
-    // <canvas>の大きさをブラウザのサイズに合わせる
-    var w = (c.width = window.innerWidth);
-    var h = (c.height = window.innerHeight);
-
-    // <canvas>の中心点
-    var cx = w / 2;
-    var cy = h / 2;
-
-    // canvasコンテキスト
-    var ctx = c.getContext("2d");
-
-    // 黒で塗りつぶす
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, w, h);
+    // 固定値
+    // ６角形を作るため60度を定義しておく
+    const baseRad = (Math.PI * 2) / 6;
 
     // 動きを制御するオプション
     var opts = {
@@ -58,6 +45,24 @@
       shadow: 5,
     };
 
+    // HTMLエレメントの<canvas>を取得
+    var c = document.getElementById("c");
+
+    // <canvas>の大きさをブラウザのサイズに合わせる
+    var w = (c.width = window.innerWidth);
+    var h = (c.height = window.innerHeight);
+
+    // <canvas>の中心点
+    var cx = w / 2;
+    var cy = h / 2;
+
+    // canvasコンテキスト
+    var ctx = c.getContext("2d");
+
+    // 黒で塗りつぶす
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, w, h);
+
     // ループごとに1増える
     var tick = 0;
 
@@ -71,9 +76,6 @@
     // dieX, dieYのサイズをコンソールで確認
     // console.table({ dieX: dieX, dieY: dieY });
 
-    // 角度、６角形を作るため60度とする
-    var baseRad = (Math.PI * 2) / 6;
-
     // アニメーションハンドラ
     var animationHandler = {
       id: 0,
@@ -86,7 +88,7 @@
       // アニメーション開始、再帰的にloop()を呼び出す
       animationHandler.id = window.requestAnimationFrame(loop);
 
-      ++tick;
+      tick++;
 
       // デフォルト。新たな図形をすでにあるCanvasの内容の上に描く
       ctx.globalCompositeOperation = "source-over";
@@ -117,9 +119,7 @@
         this.reset();
       }
 
-      /**
-       * オブジェクトを初期化する
-       */
+      // オブジェクトを初期化する
       reset() {
         // 現在の位置、この値は目的値に到達するまで、すなわちtargetTime経過するまで変わらない
         this.x = 0;
@@ -148,9 +148,7 @@
         this.setDestination();
       }
 
-      /**
-       * 目的地を設定
-       */
+      // 目的地を設定
       setDestination() {
         // 現在の位置を設定
         this.x += this.addedX;
@@ -182,9 +180,7 @@
         }
       }
 
-      /**
-       * ループ中の各ステップで円を描画
-       */
+      // ループ中の各ステップで2x2の四角形を描画
       step() {
         ++this.time;
         ++this.cumulativeTime;

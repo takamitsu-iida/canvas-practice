@@ -18,6 +18,17 @@
   </body>
 
   <script type="application/javascript">
+
+    // 固定値
+    // 360度
+    const PI2 = Math.PI * 2;
+
+    // 動きを制御するオプション
+    var opts = {
+      // 同時に存在するCircleの数
+      count: 100,
+    };
+
     // HTMLエレメントの<canvas>を取得
     var c = document.getElementById("c");
 
@@ -36,20 +47,11 @@
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, w, h);
 
-    // 動きを制御するオプション
-    var opts = {
-      // 同時に存在するCircleの数
-      count: 100,
-    };
-
     // ループごとに1増える
     var tick = 0;
 
     // Circleオブジェクトを格納する配列
     var circles = [];
-
-    // 360度
-    const PI2 = Math.PI * 2;
 
     // アニメーションハンドラ
     var animationHandler = {
@@ -86,12 +88,12 @@
 
     class Circle {
       constructor() {
+        // 画面の端までいったら初期化するので、初期化処理を関数にしておく
         this.reset();
       }
 
-      /**
-       * オブジェクトを初期化する
-       */
+
+      // オブジェクトを初期化する関数
       reset() {
         // 現在の位置座標を画面中央にする
         this.x = cx;
@@ -111,9 +113,7 @@
         this.color = this.color.replace("B", Math.floor(Math.random() * 96));
       }
 
-      /**
-       * ループ中の各ステップで円を描画
-       */
+      // ループ中の各ステップで円を描画
       step() {
         // 位置を更新
         this.x += this.speedX;

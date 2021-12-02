@@ -1,68 +1,85 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      canvas {
+        border: 1px solid gray;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <style>
-    #canvas {
-      border: 1px solid gray;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  </style>
-
-<body>
-  <canvas id="canvas" width="300" height="300"></canvas>
+  <body>
+    <canvas id="c" width="300" height="300"></canvas>
+  </body>
 
   <script>
-    window.onload = function () {
-      (function () {
-        drawFractalTree('canvas', { x: 150, y: 300 }, 50, 0.8, 40, 10, { color: 'green', width: 2 }, 10);
 
-        function drawFractalTree(canvas_id, pos0, len0, scale, angle_deg, step, line_config, interval_ms) {
-          var canvas = document.getElementById(canvas_id);
-          var c = canvas.getContext("2d");
+    function drawFractalTree(
+      canvas_id,
+      pos0,
+      len0,
+      scale,
+      angle_deg,
+      step,
+      line_config,
+      interval_ms
+    ) {
+      var canvas = document.getElementById(canvas_id);
+      var c = canvas.getContext("2d");
 
-          var i = 0;
-          //独自関数の実行
-          fractalTree(pos0.x, pos0.y, len0, 0, step);
+      var i = 0;
 
-          //独自関数fractalの定義
-          function fractalTree(x1, y1, len, deg, step) {
-            if (step <= 0) {
-              return false;
-            }
+      //独自関数の実行
+      fractalTree(pos0.x, pos0.y, len0, 0, step);
 
-            /* ここに関数の中から自分自身を呼びだす関数を設定します */
-            var x2 = x1 + len * Math.sin(deg / 180 * Math.PI);
-            var y2 = y1 - len * Math.cos(deg / 180 * Math.PI);
-            setTimeout(function () {
-              line(x1, y1, x2, y2);
-            }, interval_ms * i);
-            i++;
-
-            fractalTree(x2, y2, len * scale, deg - angle_deg, step - 1);
-            fractalTree(x2, y2, len * scale, deg + angle_deg, step - 1);
-          }
-
-          //line()
-          function line(x1, y1, x2, y2) {
-            c.beginPath();
-            c.moveTo(x1, y1)
-            c.lineTo(x2, y2);
-            if (line_config.width) {
-              c.lineWidth = line_config.width;
-            }
-            if (line_config.color) {
-              c.strokeStyle = line_config.color;
-            }
-            c.stroke();
-          }
+      //独自関数fractalの定義
+      function fractalTree(x1, y1, len, deg, step) {
+        if (step <= 0) {
+          return false;
         }
-      })();
-    }
-  </script>
-</body>
 
+        /* ここに関数の中から自分自身を呼びだす関数を設定します */
+        var x2 = x1 + len * Math.sin((deg / 180) * Math.PI);
+        var y2 = y1 - len * Math.cos((deg / 180) * Math.PI);
+        setTimeout(function () {
+          line(x1, y1, x2, y2);
+        }, interval_ms * i);
+        i++;
+
+        fractalTree(x2, y2, len * scale, deg - angle_deg, step - 1);
+        fractalTree(x2, y2, len * scale, deg + angle_deg, step - 1);
+      }
+
+      //line()
+      function line(x1, y1, x2, y2) {
+        c.beginPath();
+        c.moveTo(x1, y1);
+        c.lineTo(x2, y2);
+        if (line_config.width) {
+          c.lineWidth = line_config.width;
+        }
+        if (line_config.color) {
+          c.strokeStyle = line_config.color;
+        }
+        c.stroke();
+      }
+    }
+
+    drawFractalTree(
+      "c",
+      { x: 150, y: 300 },
+      50,
+      0.8,
+      40,
+      10,
+      { color: "green", width: 2 },
+      10
+    );
+
+
+  </script>
 </html>
