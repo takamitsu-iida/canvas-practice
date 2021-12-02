@@ -1,66 +1,240 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/base.css" />
-    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-    <script>
-      window.addEventListener("load", init);
-      function init() {
-        // ステージを作成
-        var stage = new createjs.Stage("myCanvas");
 
-        // 描画用のシェイプを作成
-        var shape = new createjs.Shape();
-        stage.addChild(shape);
+    <style type="text/css">
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #000;
+      }
+    </style>
+  </head>
 
-        // 正三角形の一辺の大きさを指定
-        var SIZE = 600;
-        // 正三角形の高さを求める
-        var HEIGHT = SIZE * Math.sin((60 * Math.PI) / 180);
+  <body>
+    <canvas id="c"></canvas>
+  </body>
 
-        // フラクタルの三角形を描く
-        drawTriangle(5, 0, HEIGHT, SIZE / 2, 0, SIZE, HEIGHT);
+  <script type="application/javascript">
+    // 指定した範囲内の数値で乱数を返す関数
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
 
-        // 三角形を描く関数
-        function drawTriangle(level, x1, y1, x2, y2, x3, y3) {
-          // 再帰レベルが0になったら描く
-          if (level <= 0) {
-            // 線の種類を設定
-            shape.graphics.beginStroke("DarkRed").setStrokeStyle(2.0);
-            // 三角形を描く
-            shape.graphics.moveTo(x1, y1); // 始点を設定
-            shape.graphics.lineTo(x2, y2); // 始点と2点目を結ぶ
-            shape.graphics.lineTo(x3, y3); // 2点目と3点目を結ぶ
-            shape.graphics.closePath(); // 始点まで結ぶ
-          } else {
-            // 再帰レベルが 0 になるまで細分化を行う
+    // 動きを制御するオプション
+    var opts = {
+      // 同時に生成するParticleオブジェクトの数
+      // フレームごとにこの数字の数だけ線を描画することになるので
+      // 大きくするほど綺麗な花火になるが、処理が増えて重くなってしまう
+      particleNumber: 200,
 
-            // 正三角形の3辺の中点を求める
-            // 1辺目の中点
-            var nx1 = (x1 + x2) / 2;
-            var ny1 = (y1 + y2) / 2;
-            // 2辺目の中点
-            var nx2 = (x2 + x3) / 2;
-            var ny2 = (y2 + y3) / 2;
-            // 3辺目の中点
-            var nx3 = (x3 + x1) / 2;
-            var ny3 = (y3 + y1) / 2;
+      // 花火を自動生成するまでのticks
+      createTicks: 80,
 
-            // 再帰レベルを更新
-            level = level - 1;
-            // 中点を元に細分化を行う
-            drawTriangle(level, x1, y1, nx1, ny1, nx3, ny3);
-            drawTriangle(level, x2, y2, nx1, ny1, nx2, ny2);
-            drawTriangle(level, x3, y3, nx2, ny2, nx3, ny3);
-          }
+      // Particleが動く速度の初期値
+      // 実際には+-5の範囲でランダムにする
+      speed: 10,
+
+      // Particleの速度を落とすための係数
+      // 毎フレーム、この値を乗算するので急速に遅くなる
+      friction: 0.95,
+
+      // 下に落ちるようにするための係数
+      // 毎フレーム、Y方向（下向き）に加算する
+      gravity: 0.5,
+
+      // 毎フレーム、アルファ値を減算する
+      // 0.01なら100フレームで0に到達して消滅する
+      // 実際には+-0.01の範囲でランダムにする
+      decayAlpha: 0.02,
+
+      // 何フレーム前の座標を使って線を描くか
+      pastCount: 3,
+
+      // HSLAカラー
+      // hueとbrightnessとalphaは数字に置き換える
+      color: "hsla(hue, 100%, brightness%, alpha)",
+    };
+
+    // HTMLエレメントの<canvas>を取得
+    var c = document.getElementById("c");
+
+    // <canvas>の大きさをブラウザのサイズに合わせる
+    var w = (c.width = window.innerWidth);
+    var h = (c.height = window.innerHeight);
+
+    // canvasコンテキスト
+    var ctx = c.getContext("2d");
+
+    // 黒で塗りつぶす
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, w, h);
+
+    // ループごとに1増え、花火を作ると0に戻る
+    var ticks = 0;
+
+    // Particleオブジェクトを格納する配列
+    var particles = [];
+
+    class Particle {
+      constructor(initialX, initialY) {
+        // このオブジェクトを削除してよい状態になったか？
+        this.isFinished = false;
+
+        // 現在の座標
+        this.x = initialX;
+        this.y = initialY;
+
+        // 線を描画するために古い座標を記憶しておく
+        this.pastCoordinates = [];
+        for (let i = 0; i < opts.pastCount; i++) {
+          this.pastCoordinates.push([initialX, initialY]);
         }
 
-        // 画面を更新
-        stage.update();
+        // 飛ばす向きを360度ランダムに選ぶ
+        this.angle = random(0, Math.PI * 2);
+
+        // 速度もランダムに選ぶ
+        this.speed = random(opts.speed - 5, opts.speed + 5);
+
+        // 徐々に速度を落とすための係数
+        this.friction = opts.friction;
+
+        // 下に落ちるようにするための数
+        this.gravity = opts.gravity;
+
+        // 色をランダムに選ぶ
+        this.hue = random(0, 360);
+
+        // 明るさをランダムに選ぶ
+        this.brightness = random(50, 80);
+
+        // HSLAカラー
+        this.color = opts.color.replace("hue", this.hue);
+        this.color = this.color.replace("brightness", this.brightness);
+
+        // 透過させることで徐々に消えるようにする、初期値は透過しない=1
+        this.alpha = 1;
+
+        // アルファの減衰量
+        this.decay = random(opts.decayAlpha - 0.01, opts.decayAlpha + 0.01);
       }
-    </script>
-  </head>
-  <body>
-    <canvas id="myCanvas" width="960" height="540"></canvas>
-  </body>
+
+      step() {
+        if (this.isFinished) {
+          return;
+        }
+
+        // 過去の座標の配列の先頭に現在の座標を追加
+        this.pastCoordinates.unshift([this.x, this.y]);
+
+        // 過去の座標の配列の最後を削除
+        this.pastCoordinates.pop();
+
+        // スピードを落とす
+        this.speed *= opts.friction;
+
+        // X軸Y軸それぞれの移動量を計算する
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed + this.gravity;
+
+        // アルファ値を減衰させ、0以下になれば消滅させる
+        this.alpha -= this.decay;
+        if (this.alpha <= 0) {
+          this.isFinished = true;
+        }
+
+        // 描画する
+        ctx.beginPath();
+
+        // もっとも古い過去座標から
+        ctx.moveTo(
+          this.pastCoordinates[this.pastCoordinates.length - 1][0],
+          this.pastCoordinates[this.pastCoordinates.length - 1][1]
+        );
+
+        // 現在の座標に
+        ctx.lineTo(this.x, this.y);
+
+        // HSLAで色を指定して
+        ctx.strokeStyle = this.color.replace("alpha", this.alpha);
+
+        // 線を引く
+        ctx.stroke();
+      }
+    }
+
+    function createParticles(x, y) {
+      for (let i = 0; i < opts.particleNumber; i++) {
+        particles.push(new Particle(x, y));
+      }
+    }
+
+    // アニメーションハンドラ
+    var animationHandler = {
+      id: 0,
+    };
+
+    function loop() {
+      // アニメーション開始、再帰的にloop()を呼び出す
+      animationHandler.id = window.requestAnimationFrame(loop);
+
+      // 参照
+      // https://developer.mozilla.org/ja/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+
+      // デフォルト。新たな図形をすでにあるCanvasの内容の上に描く
+      ctx.globalCompositeOperation = "source-over";
+
+      // 透過させた黒で上書きすることで、古い描画を徐々に見えなくしていく
+      // アルファ値を小さくするほど、軌跡が長く残る
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, w, h);
+
+      // 新たな図形と描画先Canvasの内容が重なる部分は、カラー値が加算される
+      // これにより重なった部分が光る
+      ctx.globalCompositeOperation = "lighter";
+
+      // 全てのParticleオブジェクトに関してstep()を実行して描画する
+      particles.map(function (p) {
+        p.step();
+      });
+
+      // 完了したものを配列から消去する（完了していないものだけを残す）
+      particles = particles.filter(function (p) {
+        return !p.isFinished;
+      });
+
+      // 一定時間経過したら、ランダムな場所に作成する
+      // 画面の端には作らないように範囲を制限する
+      if (ticks >= opts.createTicks) {
+        createParticles(random(w * 0.2, w * 0.8), random(h * 0.1, h * 0.5));
+        ticks = 0;
+      } else {
+        ticks++;
+      }
+    }
+
+    // ブラウザのサイズが変更になった場合、グローバル変数をセットし直す
+    window.addEventListener("resize", function () {
+      w = c.width = window.innerWidth;
+      h = c.height = window.innerHeight;
+
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, w, h);
+    });
+
+    // クリックしたらアニメーションを停止
+    window.onclick = function () {
+      if (animationHandler.id) {
+        window.cancelAnimationFrame(animationHandler.id);
+        animationHandler.id = 0;
+      } else {
+        loop();
+      }
+    };
+
+    loop();
+  </script>
 </html>

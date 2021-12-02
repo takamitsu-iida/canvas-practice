@@ -10,3 +10,7 @@
 - 作例：点が六角形に沿って移動
 
 <https://takamitsu-iida.github.io/canvas-practice/ex-5.html>
+
+- 作例：花火のように線を描画
+
+<https://takamitsu-iida.github.io/canvas-practice/ex-8.html>
