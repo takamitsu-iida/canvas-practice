@@ -28,7 +28,7 @@
       // 移動する六角形の一辺の長さ
       len: 100,
 
-      // 同時に存在するLineの数
+      // 同時に存在するRectangleの数
       count: 100,
 
       // 次の目的地に到達するための時間、大きいほど移動速度は遅くなる
@@ -37,7 +37,7 @@
       // ランダムな時間を作る係数
       addedTime: 50,
 
-      // ランダム値がdieChanceよりも小さかったらLineを初期化する
+      // ランダム値がdieChanceよりも小さかったらRectangleを初期化する
       dieChance: 0.05,
 
       // 2x2の四角形を滲ませて表示するための係数
@@ -66,8 +66,8 @@
     // ループごとに1増える
     var tick = 0;
 
-    // Lineオブジェクトを格納する配列
-    var lines = [];
+    // Rectangleオブジェクトを格納する配列
+    var rectangles = [];
 
     // 初期化条件
     var dieX = w / 2 / opts.len;
@@ -103,18 +103,18 @@
       // これにより重なった部分が光る
       ctx.globalCompositeOperation = "lighter";
 
-      // 上限であるopts.countに到達するまでLinesオブジェクトを増やしていく
-      if (lines.length < opts.count) {
-        lines.push(new Line());
+      // 上限であるopts.countに到達するまでRectangleオブジェクトを増やしていく
+      if (rectangles.length < opts.count) {
+        rectangles.push(new Rectangle());
       }
 
-      // 全てのLineオブジェクトに関してstep()を実行して描画する
-      lines.map(function (line) {
-        line.step();
+      // 全てのRectangleオブジェクトに関してstep()を実行して描画する
+      rectangles.map(function (r) {
+        r.step();
       });
     }
 
-    class Line {
+    class Rectangle {
       constructor() {
         this.reset();
       }
@@ -219,7 +219,6 @@
         );
       }
     }
-
 
     // ブラウザのサイズが変更になった場合、グローバル変数をセットし直す
     window.addEventListener("resize", function () {
