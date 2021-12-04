@@ -154,7 +154,7 @@
         this.x += this.addedX;
         this.y += this.addedY;
 
-        // 経過時間
+        // 経過時間、正確には時間ではなくtick数
         this.time = 0;
 
         // ターゲットタイム経過したら、すなわち目的地についたら再度setDestination()する
@@ -190,7 +190,7 @@
           this.setDestination();
         }
 
-        // ターゲットタイムまでどのくらいの場所にいるか
+        // ターゲットタイムまでどのくらいの割合にいるか
         var prop = this.time / this.targetTime;
 
         // ease処理

@@ -83,6 +83,7 @@
     // Particleオブジェクトを格納する配列
     var particles = [];
 
+    // 花火の破片の粒
     class Particle {
       constructor(initialX, initialY) {
         // このオブジェクトを削除してよい状態になったか？
@@ -178,6 +179,63 @@
       }
     }
 
+
+    var fireworks = [];
+
+    // https://codepen.io/seanc12/pen/QrXpbO
+    class Firework {
+      constructor(initialX, initialY) {
+        this.isFinished = false;
+
+        this.x = initialX;
+        this.y = initialY;
+
+        // ターゲットの場所を決める
+        this.targetY = random(h/10, h/2);
+        this.distanceY = this.y - this.targetY
+
+        this.time = 0;
+        this.targetTime = 180;
+
+        this.size = 10;
+        this.shrink = 0.99;
+
+        // 色をランダムに選ぶ
+        this.hue = random(0, 360);
+        this.color = "hsla(hue, 100%, 100%, 1)";
+        this.color = this.color.replace("hue", this.hue);
+
+        // 色がおかしい！
+        console.log(this.color);
+      }
+
+      step() {
+        this.time++;
+
+        // ターゲットタイムまでどのくらいの割合にいるか
+        var proportion = this.time / this.targetTime;
+        var wave = Math.sin((proportion * Math.PI) / 2);
+        var y = this.y - this.distanceY * wave;
+
+        // ターゲット時間経過したら消滅
+        if (this.time >= this.targetTime) {
+          this.isFinished = true;
+          createParticles(this.x, y);
+          return;
+        }
+
+        this.size *= this.shrink;
+
+        // draw
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, y, this.size, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+
+      }
+    }
+
     // アニメーションハンドラ
     var animationHandler = {
       id: 0,
@@ -202,6 +260,15 @@
       // これにより重なった部分が光る
       ctx.globalCompositeOperation = "lighter";
 
+      fireworks.map(function(f) {
+        f.step();
+      });
+
+      // 完了したものを配列から消去する（完了していないものだけを残す）
+      fireworks = fireworks.filter(function (f) {
+        return !f.isFinished;
+      });
+
       // 全てのParticleオブジェクトに関してstep()を実行して描画する
       particles.map(function (p) {
         p.step();
@@ -215,7 +282,7 @@
       // 一定時間経過したら、ランダムな場所に作成する
       // 画面の端には作らないように範囲を制限する
       if (ticks >= opts.createTicks) {
-        createParticles(random(w * 0.2, w * 0.8), random(h * 0.1, h * 0.5));
+        fireworks.push(new Firework(random(w * 0.2, w * 0.8), h));
         ticks = 0;
       } else {
         ticks++;
