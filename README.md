@@ -14,3 +14,15 @@
 - 作例：花火のように線を描画
 
 <https://takamitsu-iida.github.io/canvas-practice/ex-8-1.html>
+
+- 作例：花火のように円を描画
+
+<https://takamitsu-iida.github.io/canvas-practice/ex-8-2.html>
+
+- 作例：花火の打ち上げ
+
+<https://takamitsu-iida.github.io/canvas-practice/ex-8-3.html>
+
+- 作例：花火
+
+<https://takamitsu-iida.github.io/canvas-practice/ex-8-4.html>

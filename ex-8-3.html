@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+
+    <style type="text/css">
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+
+  <script type="application/javascript">
+    // 指定した範囲内の数値で乱数を返す関数
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    // HTMLエレメントの<canvas>を取得
+    var c = document.getElementById("c");
+
+    // <canvas>の大きさをブラウザのサイズに合わせる
+    var w = (c.width = window.innerWidth);
+    var h = (c.height = window.innerHeight);
+
+    // canvasコンテキスト
+    var ctx = c.getContext("2d");
+
+    // 黒で塗りつぶす
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, w, h);
+
+    // 経過時間
+    // ループごとに1増える
+    var ticks = 0;
+
+    // 花火を自動生成するまでの時間（ticks）
+    // 1秒に60回、loop()が実行されるので、60を指定すると1秒ごとに花火が作られる
+    var createTicks = 80;
+
+    // 打ち上げ中の花火を格納する配列
+    var fireworks = [];
+
+    class Firework {
+      constructor(initialX, initialY) {
+        this.isFinished = false;
+
+        this.x = initialX;
+        this.y = initialY;
+
+        // ターゲットの場所を決める
+        this.targetY = random(h/10, h/2);
+        this.distanceY = this.y - this.targetY
+
+        // 生成されてからの時間（ticks）
+        this.time = 0;
+
+        // どのくらいの時間（ticks）で一番上まで到達するか
+        this.targetTime = 180;
+
+        // 円のサイズ
+        this.size = 3;
+
+        // 円のサイズを徐々に小さくする係数
+        this.shrink = 0.99;
+
+        // 円の色をランダムに選ぶ
+        this.hue = random(0, 360);
+        this.color = "hsl(hue, 100%, 50%)";
+        this.color = this.color.replace("hue", this.hue);
+      }
+
+      step() {
+        this.time++;
+
+        // ターゲットタイムまでどのくらいの割合にいるか
+        var proportion = this.time / this.targetTime;
+        var wave = Math.sin((proportion * Math.PI) / 2);
+        var y = this.y - this.distanceY * wave;
+
+        // ターゲット時間経過したら消滅
+        if (this.time >= this.targetTime) {
+          this.isFinished = true;
+          // ここで花火が弾ける
+          // createParticles(this.x, y);
+          return;
+        }
+
+        this.size *= this.shrink;
+
+        // 円を描画する
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, y, this.size, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // アニメーションハンドラ
+    var animationHandler = {
+      id: 0,
+    };
+
+    function loop() {
+      // アニメーション開始、再帰的にloop()を呼び出す
+      animationHandler.id = window.requestAnimationFrame(loop);
+
+      // 参照
+      // https://developer.mozilla.org/ja/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+
+      // デフォルト。新たな図形をすでにあるCanvasの内容の上に描く
+      ctx.globalCompositeOperation = "source-over";
+
+      // 透過させた黒で上書きすることで、古い描画を徐々に見えなくしていく
+      // アルファ値を小さくするほど、軌跡が長く残る
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, w, h);
+
+      // 新たな図形と描画先Canvasの内容が重なる部分は、カラー値が加算される
+      // これにより重なった部分が光る
+      ctx.globalCompositeOperation = "lighter";
+
+
+      var new_fireworks = [];
+      for (let i=0; i < fireworks.length; i++) {
+        var f = fireworks[i];
+        f.step();
+
+        // まだ完了していないものだけをnew_fireworks配列に入れる
+        if (f.isFinished === false) {
+          new_fireworks.push(f);
+        }
+      }
+      fireworks = new_fireworks;
+
+      // 一定時間経過したら、ランダムな場所に作成する
+      // 画面の端には作らないように範囲を制限する
+      if (ticks >= createTicks) {
+        fireworks.push(new Firework(random(w * 0.2, w * 0.8), h));
+        ticks = 0;
+      } else {
+        ticks++;
+      }
+    }
+
+    // ブラウザのサイズが変更になった場合、グローバル変数をセットし直す
+    window.addEventListener("resize", function () {
+      w = c.width = window.innerWidth;
+      h = c.height = window.innerHeight;
+
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, w, h);
+    });
+
+    // クリックしたらアニメーションを停止
+    window.onclick = function () {
+      if (animationHandler.id) {
+        window.cancelAnimationFrame(animationHandler.id);
+        animationHandler.id = 0;
+      } else {
+        loop();
+      }
+    };
+
+    loop();
+  </script>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+
+    <style type="text/css">
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+
+  <script type="application/javascript">
+    // 指定した範囲内の数値で乱数を返す関数
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    // 動きを制御するオプション
+    var opts = {
+      // 同時に生成するParticleオブジェクトの数
+      // フレームごとにこの数字の数だけ線を描画することになるので
+      // 大きくするほど綺麗な花火になるが、処理が増えて重くなってしまう
+      particleNumber: 200,
+
+      // 花火を自動生成するまでのticks
+      // 1秒に60回、loop()が実行されるので、60に指定すると1秒ごとに花火が作られる
+      createTicks: 80,
+
+      // 速度の最大値
+      // 1秒に60回、loop()が実行されるので、speed = 10では1秒で600ピクセル進むことになる
+      speed: 10,
+
+      // Particleの速度を落とすための係数
+      // 毎フレーム、この値を乗算する
+      friction: 0.96,
+
+      // 下に落ちるようにするための係数
+      // 毎フレーム、Y方向（下向き）に加算する
+      gravity: 0.1,
+    };
+
+    // HTMLエレメントの<canvas>を取得
+    var c = document.getElementById("c");
+
+    // <canvas>の大きさをブラウザのサイズに合わせる
+    var w = (c.width = window.innerWidth);
+    var h = (c.height = window.innerHeight);
+
+    // canvasコンテキスト
+    var ctx = c.getContext("2d");
+
+    // 黒で塗りつぶす
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, w, h);
+
+    // 経過時間
+    // ループごとに1増える
+    var ticks = 0;
+
+    // 花火を自動生成するまでの時間（ticks）
+    // 1秒に60回、loop()が実行されるので、60を指定すると1秒ごとに花火が作られる
+    // var createTicks = 80;
+    var createTicks = 30;
+
+    // 打ち上げ中の花火を格納する配列
+    var fireworks = [];
+
+    class Firework {
+      constructor(initialX, initialY) {
+        this.isFinished = false;
+
+        this.x = initialX;
+        this.y = initialY;
+
+        // ターゲットの場所を決める
+        this.targetY = random(h / 10, h / 2);
+        this.distanceY = this.y - this.targetY;
+
+        // 生成されてからの時間（ticks）
+        this.time = 0;
+
+        // どのくらいの時間（ticks）で一番上まで到達するか
+        this.targetTime = 180;
+
+        // 円のサイズ
+        this.size = 3;
+
+        // 円のサイズを徐々に小さくする係数
+        this.shrink = 0.99;
+
+        // 円の色をランダムに選ぶ
+        this.hue = random(0, 360);
+        this.color = "hsl(hue, 100%, 50%)";
+        this.color = this.color.replace("hue", this.hue);
+      }
+
+      step() {
+        this.time++;
+
+        // ターゲットタイムまでどのくらいの割合にいるか
+        var proportion = this.time / this.targetTime;
+        var wave = Math.sin((proportion * Math.PI) / 2);
+        var y = this.y - this.distanceY * wave;
+
+        // ターゲット時間経過したら消滅すると同時に花火の破片を作成する
+        if (this.time >= this.targetTime) {
+          this.isFinished = true;
+          createParticles(this.x, y, random(0, 360));
+          return;
+        }
+
+        this.size *= this.shrink;
+
+        // 円を描画する
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, y, this.size, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // Particleオブジェクトを格納する配列
+    var particles = [];
+
+    class ParticleLine {
+      constructor(initialX, initialY, hue) {
+        // このオブジェクトを削除してよい状態になったか？
+        this.isFinished = false;
+
+        // 現在の座標
+        this.x = initialX;
+        this.y = initialY;
+
+        // 線を描画するために古い座標を記憶しておく
+        // 3フレーム前の座標まで覚えておく
+        var pastCount = 3;
+        this.pastCoordinates = [];
+        for (let i = 0; i < pastCount; i++) {
+          this.pastCoordinates.push([initialX, initialY]);
+        }
+
+        // 飛ばす向きを360度ランダムに選ぶ
+        this.angle = random(0, Math.PI * 2);
+
+        // 速度もランダムに選ぶ
+        this.speed = Math.sin((Math.random() * Math.PI) / 2) * opts.speed;
+
+        // 徐々に速度を落とすための係数
+        this.friction = opts.friction;
+
+        // 下に落ちるようにするための数
+        this.gravity = opts.gravity;
+
+        // 色をランダムに選ぶ
+        this.hue = hue + random(-50, 50);
+
+        // 明るさをランダムに選ぶ
+        this.brightness = random(50, 80);
+
+        // HSLAカラー
+        // hueとbrightnessとalphaは数字に置き換える
+        this.color = "hsla(hue, 100%, brightness%, alpha)";
+        this.color = this.color.replace("hue", this.hue);
+        this.color = this.color.replace("brightness", this.brightness);
+
+        // 透過させることで徐々に消えるようにする、初期値は透過しない=1
+        this.alpha = 1;
+
+        // アルファの減衰量
+        // 毎フレーム、アルファ値を減算する
+        // 0.01なら100フレームで0に到達して消滅する
+        this.decay = random(0.01, 0.03);
+      }
+
+      step() {
+        if (this.isFinished) {
+          return;
+        }
+
+        // 過去の座標の配列の先頭に現在の座標を追加
+        this.pastCoordinates.unshift([this.x, this.y]);
+
+        // 過去の座標の配列の最後を削除
+        this.pastCoordinates.pop();
+
+        // スピードを落とす
+        this.speed *= opts.friction;
+
+        // X軸Y軸それぞれの移動量を計算する
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed + this.gravity;
+
+        // アルファ値を減衰させ、0以下になれば消滅させる
+        this.alpha -= this.decay;
+        if (this.alpha <= 0) {
+          this.isFinished = true;
+        }
+
+        // 描画する
+        ctx.beginPath();
+
+        // もっとも古い過去座標から
+        ctx.moveTo(
+          this.pastCoordinates[this.pastCoordinates.length - 1][0],
+          this.pastCoordinates[this.pastCoordinates.length - 1][1]
+        );
+
+        // 現在の座標に
+        ctx.lineTo(this.x, this.y);
+
+        // HSLAで色を指定して
+        ctx.strokeStyle = this.color.replace("alpha", this.alpha);
+
+        // 線を引く
+        ctx.stroke();
+      }
+    }
+
+    class ParticleCircle {
+      constructor(initialX, initialY, hue) {
+        // 燃え尽きたか？（このオブジェクトを削除してよい状態になったか？）
+        this.isFinished = false;
+
+        // 現在の座標
+        this.x = initialX;
+        this.y = initialY;
+
+        // 色
+        this.hue = hue + random(-50, 50);
+
+        // 飛ばす向きを360度ランダムに選ぶ
+        this.angle = random(0, Math.PI * 2);
+
+        // 初期速度
+        this.speed = Math.sin((Math.random() * Math.PI) / 2) * opts.speed;
+
+        // X軸Y軸方向の速度に分解
+        this.vx = Math.cos(this.angle) * this.speed;
+        this.vy = Math.sin(this.angle) * this.speed;
+
+        // 空気摩擦
+        this.friction = opts.friction;
+
+        // 重力
+        this.gravity = opts.gravity;
+
+        // 円のサイズ
+        this.size = 6;
+
+        // 円のサイズを小さくする係数
+        this.shrink = random(0.96, 0.97);
+      }
+
+      step() {
+        if (this.isFinished) {
+          return;
+        }
+
+        // 空気摩擦により速度は遅くなる
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+
+        // 重力によりY軸方向には一定速度で下がる
+        this.vy += this.gravity;
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // サイズを小さくしていき、ある程度小さくなったらオブジェクトを消す
+        this.size *= this.shrink;
+        if (this.size < 0.2) {
+          this.isFinished = true;
+          return;
+        }
+
+        // 描画する
+        ctx.fillStyle = "hsla(" + this.hue + ", 100%, 50%, 1)";
+        ctx.beginPath();
+        ctx.arc(
+          this.x,
+          this.y,
+          Math.random() * this.size,
+          0,
+          Math.PI * 2,
+          true
+        );
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // Particleを作る
+    function createParticles(x, y, hue) {
+      if (Math.random() < 0.5) {
+        for (let i = 0; i < opts.particleNumber; i++) {
+          particles.push(new ParticleLine(x, y, hue));
+        }
+      } else {
+        for (let i = 0; i < opts.particleNumber; i++) {
+          particles.push(new ParticleCircle(x, y, hue));
+        }
+      }
+    }
+
+    // アニメーションハンドラ
+    var animationHandler = {
+      id: 0,
+    };
+
+    function loop() {
+      // アニメーション開始、再帰的にloop()を呼び出す
+      animationHandler.id = window.requestAnimationFrame(loop);
+
+      // 参照
+      // https://developer.mozilla.org/ja/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+
+      // デフォルト。新たな図形をすでにあるCanvasの内容の上に描く
+      ctx.globalCompositeOperation = "source-over";
+
+      // 透過させた黒で上書きすることで、古い描画を徐々に見えなくしていく
+      // アルファ値を小さくするほど、軌跡が長く残る
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, w, h);
+
+      // 新たな図形と描画先Canvasの内容が重なる部分は、カラー値が加算される
+      // これにより重なった部分が光る
+      ctx.globalCompositeOperation = "lighter";
+
+      var remainedFireworks = [];
+      for (let i = 0; i < fireworks.length; i++) {
+        var f = fireworks[i];
+        f.step();
+
+        // まだ完了していないものだけをnew_fireworks配列に入れる
+        if (f.isFinished === false) {
+          remainedFireworks.push(f);
+        }
+      }
+      fireworks = remainedFireworks;
+
+      var remainedParticles = [];
+      for (let i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.step();
+
+        if (p.isFinished === false) {
+          remainedParticles.push(p);
+        }
+      }
+      particles = remainedParticles;
+
+      // 一定時間経過したら、ランダムな場所に作成する
+      // 画面の端には作らないように範囲を制限する
+      if (ticks >= createTicks) {
+        fireworks.push(new Firework(random(w * 0.2, w * 0.8), h));
+        ticks = 0;
+      } else {
+        ticks++;
+      }
+    }
+
+    // ブラウザのサイズが変更になった場合、グローバル変数をセットし直す
+    window.addEventListener("resize", function () {
+      w = c.width = window.innerWidth;
+      h = c.height = window.innerHeight;
+
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, w, h);
+    });
+
+    // クリックしたらアニメーションを停止
+    window.onclick = function () {
+      if (animationHandler.id) {
+        window.cancelAnimationFrame(animationHandler.id);
+        animationHandler.id = 0;
+      } else {
+        loop();
+      }
+    };
+
+    loop();
+  </script>
+</html>

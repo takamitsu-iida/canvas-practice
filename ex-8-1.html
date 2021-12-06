@@ -34,33 +34,17 @@
       // 1秒に60回、loop()が実行されるので、60に指定すると1秒ごとに花火が作られる
       createTicks: 80,
 
-      // Particleが動く速度の初期値、new Particle()で生成した際に+-5を加えてランダムにする
+      // 速度の最大値。new ParticleLine()で生成した際にランダムにする
       // 1秒に60回、loop()が実行されるので、speed = 10では1秒で600ピクセル進むことになる
       speed: 10,
 
       // Particleの速度を落とすための係数
       // 毎フレーム、この値を乗算する
-      // 1秒間で0.95を60回乗算するので、急速に遅くなっていく
-      //
-      // TODO:
-      // 何秒で消滅させるか、というのをもとにinterpolateする方式に変えたい
-      friction: 0.95,
+      friction: 0.96,
 
       // 下に落ちるようにするための係数
       // 毎フレーム、Y方向（下向き）に加算する
-      gravity: 0.5,
-
-      // 毎フレーム、アルファ値を減算する
-      // 0.01なら100フレームで0に到達して消滅する
-      // 実際には+-0.01を加えた範囲でランダムにする
-      decayAlpha: 0.02,
-
-      // 何フレーム前の座標を使って線を描くか
-      pastCount: 3,
-
-      // HSLAカラー
-      // hueとbrightnessとalphaは数字に置き換える
-      color: "hsla(hue, 100%, brightness%, alpha)",
+      gravity: 0.1,
     };
 
     // HTMLエレメントの<canvas>を取得
@@ -83,8 +67,8 @@
     // Particleオブジェクトを格納する配列
     var particles = [];
 
-    class Particle {
-      constructor(initialX, initialY) {
+    class ParticleLine {
+      constructor(initialX, initialY, hue) {
         // このオブジェクトを削除してよい状態になったか？
         this.isFinished = false;
 
@@ -93,8 +77,10 @@
         this.y = initialY;
 
         // 線を描画するために古い座標を記憶しておく
+        // 3フレーム前の座標まで覚えておく
+        var pastCount = 3;
         this.pastCoordinates = [];
-        for (let i = 0; i < opts.pastCount; i++) {
+        for (let i = 0; i < pastCount; i++) {
           this.pastCoordinates.push([initialX, initialY]);
         }
 
@@ -102,7 +88,7 @@
         this.angle = random(0, Math.PI * 2);
 
         // 速度もランダムに選ぶ
-        this.speed = random(opts.speed - 5, opts.speed + 5);
+        this.speed = Math.sin(Math.random() * Math.PI / 2) * opts.speed;
 
         // 徐々に速度を落とすための係数
         this.friction = opts.friction;
@@ -111,20 +97,24 @@
         this.gravity = opts.gravity;
 
         // 色をランダムに選ぶ
-        this.hue = random(0, 360);
+        this.hue = hue + random(-50, 50);
 
         // 明るさをランダムに選ぶ
         this.brightness = random(50, 80);
 
         // HSLAカラー
-        this.color = opts.color.replace("hue", this.hue);
+        // hueとbrightnessとalphaは数字に置き換える
+        this.color = "hsla(hue, 100%, brightness%, alpha)";
+        this.color = this.color.replace("hue", this.hue);
         this.color = this.color.replace("brightness", this.brightness);
 
         // 透過させることで徐々に消えるようにする、初期値は透過しない=1
         this.alpha = 1;
 
         // アルファの減衰量
-        this.decay = random(opts.decayAlpha - 0.01, opts.decayAlpha + 0.01);
+        // 毎フレーム、アルファ値を減算する
+        // 0.01なら100フレームで0に到達して消滅する
+        this.decay = random(0.01, 0.03);
       }
 
       step() {
@@ -172,9 +162,9 @@
     }
 
     // Particleを作る
-    function createParticles(x, y) {
+    function createParticles(x, y, hue) {
       for (let i = 0; i < opts.particleNumber; i++) {
-        particles.push(new Particle(x, y));
+        particles.push(new ParticleLine(x, y, hue));
       }
     }
 
@@ -215,7 +205,7 @@
       // 一定時間経過したら、ランダムな場所に作成する
       // 画面の端には作らないように範囲を制限する
       if (ticks >= opts.createTicks) {
-        createParticles(random(w * 0.2, w * 0.8), random(h * 0.1, h * 0.5));
+        createParticles(random(w * 0.2, w * 0.8), random(h * 0.1, h * 0.5), random(0, 360));
         ticks = 0;
       } else {
         ticks++;
