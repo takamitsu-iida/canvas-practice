@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+          sans-serif;
+        margin: 2em;
+      }
+      pre {
+        padding-top: 1em;
+        padding-left: 2em;
+        margin: 1em;
+        width: 90%;
+        overflow: auto;
+        background-color: #f6f6f6;
+        font-family: "MS Gothic", monospace;
+        line-height: 150%;
+      }
+      blockquote {
+        position: relative;
+        padding: 0.5em 1em 1em 2em;
+        box-sizing: border-box;
+        background: #f5f5f5;
+        color: #777777;
+        border-left: 4px solid #9dd4ff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>関数の中で使う変数</h1>
+
+    <p>関数の中で宣言した変数は、その関数の中でしか使えません。</p>
+
+    <p>
+      関数の外側で<strong>varで宣言された変数は、関数の中でも使えます。</strong>
+    </p>
+
+    <p>
+      下記の例では、関数の外側で宣言したcountを関数countUp()の中で操作しています。
+    </p>
+
+    <pre>
+var count = 0;
+
+function countUp() {
+  count++;
+}
+
+countUp();
+console.log(count);  // 1
+
+countUp();
+console.log(count);  // 2
+    </pre>
+
+    <p>このプログラムは動きますが、あまり良いプログラムではありません。</p>
+
+    <p>
+      var count = 0;の宣言と、関数の宣言が近い場所にあるので見やすいですが、
+      遠く離れた場所で宣言されていると、「countってどっから出てきた？」となってしまいます。
+    </p>
+
+    <p>
+      このようなどこからでもアクセスできてしまう変数を「グローバル変数」と言います。
+    </p>
+
+    <p>
+      グローバル変数はできるだけ使わないようにするのが、バグの少ない、よいプログラムです。
+    </p>
+
+    <p>ですが、使わざるを得ない場面も多々あります。</p>
+
+    <h1>問題</h1>
+
+    <p>
+      グローバル変数として定義されている幅（width）と高さ（height）を使って
+      四角形（Rectangle）の面積を求めるcalcRectangleArea関数を作成してください。
+    </p>
+
+  </body>
+
+  <script type="application/javascript">
+    var width = 20;
+    var height = 10;
+
+    // 関数calcRectangleArea()を作成してください
+
+    var area = calcRectangleArea();
+
+    console.log("面積は" + area + "です");
+  </script>
+</html>

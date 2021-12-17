@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+          sans-serif;
+        margin: 2em;
+      }
+      pre {
+        padding-top: 1em;
+        padding-left: 2em;
+        margin: 1em;
+        width: 90%;
+        overflow: auto;
+        background-color: #f6f6f6;
+        font-family: "MS Gothic", monospace;
+        line-height: 150%;
+      }
+      blockquote {
+        position: relative;
+        padding: 0.5em 1em 1em 2em;
+        box-sizing: border-box;
+        background: #f5f5f5;
+        color: #777777;
+        border-left: 4px solid #9dd4ff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>クラス</h1>
+
+    <p>クラスはオブジェクトを作るための設計図です。</p>
+
+    <p>オブジェクトの中で使う値は違うけど、動作としては同じオブジェクトをたくさん作るときにクラスを使います。</p>
+
+    <p>たとえば四角形（Rectangle）を考えたとき、幅（width）と高さ（height）の情報が必要です。</p>
+
+    <p>いままで学習してきた知識を総動員して幅10、高さ10の四角形を表すオブジェクトを作るなら、こうなります。</p>
+
+    <pre>
+var rect = {};  // 空っぽのオブジェクトを作る
+
+rect.width = 10;  // 幅を10
+rect.height = 10;  // 高さを10
+    </pre>
+
+    <p>
+      さらに、自分自身の面積を計算するcalcArea()という関数をオブジェクトに持たせるなら、こうなります。
+    </p>
+
+    <pre>
+rect.caclArea = function() {
+  return this.width * this.height;
+}
+    </pre>
+
+    <p>もしくは、初期値としてこう書いてもいいでしょう。</p>
+
+    <pre>
+var rect = {
+  width: 10,
+  height: 10,
+  caclArea: function () {
+    return this.width * this.height;
+  },
+};
+    </pre>
+
+    <p>四角形を表すこのオブジェクトを一つしか作らないなら、この書き方で十分です。</p>
+
+    <p>幅や高さを変えた四角形のオブジェクトをたくさん作る必要があるなら、クラスの出番です。</p>
+
+    <h2>クラス宣言</h2>
+
+    <p>クラスはオブジェクトを作るための設計図です。</p>
+
+    <p>constructor()という特別な関数の中で、どんな値をもたせたいかを設計します。</p>
+
+    <pre>
+class Rectangle {
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+  }
+}
+    </pre>
+
+    <p>これは設計図なので、実際に使うにはオブジェクトを作る必要があります。</p>
+
+    <p>幅10、高さ10の四角形のオブジェクトは次のようにすることで作り出せます。</p>
+
+    <pre>
+var rect = new Rectangle(10, 10);
+    </pre>
+
+    <p>幅20、高さ20の別の四角形のオブジェクトは、</p>
+
+    <pre>
+var rect2 = new Rectangle(20, 20);
+    </pre>
+
+    <p>とすれば作れます。</p>
+
+    <p>このように、classでオブジェクトの設計図を作り、newで作り出します。</p>
+
+    <p>MDN <a href="">クラス</a></p>
+
+    <blockquote>
+      <p>【参考文献】</p>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Classes"
+        >https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Classes</a
+      >
+    </blockquote>
+
+
+
+  </body>
+
+  <script type="application/javascript">
+    var fruit;
+
+    console.log(fruit);
+  </script>
+</html>

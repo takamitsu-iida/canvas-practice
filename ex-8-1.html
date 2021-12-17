@@ -18,7 +18,9 @@
   </body>
 
   <script type="application/javascript">
-    // 指定した範囲内の数値で乱数を返す関数
+    /**
+     * 指定した範囲内の数値で乱数を返す関数
+     */
     function random(min, max) {
       return Math.random() * (max - min) + min;
     }
@@ -67,6 +69,9 @@
     // Particleオブジェクトを格納する配列
     var particles = [];
 
+    /**
+     * 花火の破片ひとつぶの動きを表すクラス
+     */
     class ParticleLine {
       constructor(initialX, initialY, hue) {
         // このオブジェクトを削除してよい状態になったか？
@@ -84,22 +89,26 @@
           this.pastCoordinates.push([initialX, initialY]);
         }
 
-        // 飛ばす向きを360度ランダムに選ぶ
+        // 飛ばす向きを0～2πの角度でランダムに選ぶ
         this.angle = random(0, Math.PI * 2);
 
         // 速度もランダムに選ぶ
+        // 花火をより綺麗に見せるためにsin()を通す
         this.speed = Math.sin(Math.random() * Math.PI / 2) * opts.speed;
 
-        // 徐々に速度を落とすための係数
+        // 徐々に速度を落とすための空気摩擦
         this.friction = opts.friction;
 
-        // 下に落ちるようにするための数
+        // 下に落ちるようにするための重力
         this.gravity = opts.gravity;
 
-        // 色をランダムに選ぶ
+        // hue(色相)をランダムに選ぶ
+        // hueは0～360度で表現される
+        // +-50を加えてランダムにする
         this.hue = hue + random(-50, 50);
 
         // 明るさをランダムに選ぶ
+        // 明るさは0～100%
         this.brightness = random(50, 80);
 
         // HSLAカラー
@@ -108,7 +117,8 @@
         this.color = this.color.replace("hue", this.hue);
         this.color = this.color.replace("brightness", this.brightness);
 
-        // 透過させることで徐々に消えるようにする、初期値は透過しない=1
+        // アルファ値（透過値）の初期値は1(不透過)
+        // これを徐々に小さくすることで消えるようにする
         this.alpha = 1;
 
         // アルファの減衰量
@@ -193,14 +203,22 @@
       ctx.globalCompositeOperation = "lighter";
 
       // 全てのParticleオブジェクトに関してstep()を実行して描画する
-      particles.map(function (p) {
+      for (let i=0; i < particles.length; i++) {
+        let p = particles[i];
         p.step();
-      });
+      }
 
       // 完了したものを配列から消去する（完了していないものだけを残す）
-      particles = particles.filter(function (p) {
-        return !p.isFinished;
-      });
+      var remainedParticles = [];
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        if (p.isFinished === false) {
+          remainedParticles.push(p);
+        }
+      }
+      particles = remainedParticles;
+
+      // 上の２つのfor文は一つにすることができる
 
       // 一定時間経過したら、ランダムな場所に作成する
       // 画面の端には作らないように範囲を制限する
@@ -213,13 +231,13 @@
     }
 
     // ブラウザのサイズが変更になった場合、グローバル変数をセットし直す
-    window.addEventListener("resize", function () {
+    window.onresize = function () {
       w = c.width = window.innerWidth;
       h = c.height = window.innerHeight;
 
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, w, h);
-    });
+    };
 
     // クリックしたらアニメーションを停止
     window.onclick = function () {

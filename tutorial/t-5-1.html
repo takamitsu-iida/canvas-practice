@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+          sans-serif;
+        margin: 2em;
+      }
+      pre {
+        padding-top: 1em;
+        padding-left: 2em;
+        margin: 1em;
+        width: 90%;
+        overflow: auto;
+        background-color: #f6f6f6;
+        font-family: "MS Gothic", monospace;
+        line-height: 150%;
+      }
+      blockquote {
+        position: relative;
+        padding: 0.5em 1em 1em 2em;
+        box-sizing: border-box;
+        background: #f5f5f5;
+        color: #777777;
+        border-left: 4px solid #9dd4ff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>オブジェクト</h1>
+
+    <p><strong>JavaScriptの全てはオブジェクトです。</strong></p>
+
+    <p>
+      今は意味が分からないかもしれませんが、このことはJavaScriptを学習する上で重要なことですので、覚えておいてください。
+    </p>
+
+    <p>
+      オブジェクトというのは、関連のあるデータと関数をひとかたまりにしたものです。
+    </p>
+
+    <p>
+      オブジェクトを使うことで、分かりやすく読みやすいプログラムが書けるようになります。
+    </p>
+
+    <p>オブジェクトは{}で表します。</p>
+
+    <p>userという変数を作成して、空っぽのオブジェクトを代入するには、このようにします。</p>
+
+    <pre>
+var user = {};
+    </pre>
+
+    <p>このオブジェクトにデータを追加するには、このようにします。</p>
+
+    <pre>
+user.firstName = "Takamitsu";
+    </pre>
+
+    <p>
+      userオブジェクトの中では、firstNameというキーに対して、"Takamitsu"という値（文字列）が割り当てられました。
+    </p>
+
+    <p>キーは重複しなければいくつでも定義できます。</p>
+
+    <pre>
+user.lastName = "Iida";
+    </pre>
+
+    <p>
+      これでuserオブジェクトの中には２つのキー、firstNameとlastNameが追加されました。
+    </p>
+
+    <p>値を変更したい場合は、そのキーに再度代入するだけです。</p>
+
+    <pre>
+user.firstName = "Mayo";
+    </pre>
+
+    <p>
+      これで、先程まで"Takamitsu"だったfirstNameキーが"Mayo"に置き換わりました。
+    </p>
+
+    <p>この状態でコンソールにこのuserオブジェクトを出力してみます。</p>
+
+    <pre>
+console.log(user);
+    </pre>
+
+    <p>すると {firstName: 'Mayo', lastName: 'Iida'} と表示されます。</p>
+
+    <p>
+      先程は空っぽのオブジェクトを作って、後からキーと値を追加していきましたが、変数を定義するときに完成したオブジェクトを代入することもできます。
+    </p>
+
+    <pre>
+var user = {
+  firstName: "Takamitsu",
+  lastName: "Iida",
+};
+    </pre>
+
+    <p>キー:値</p>
+
+    <p>という書式になっています。</p>
+
+    <p>値の後ろにコンマ,が付いていることに注意してください。</p>
+
+
+    <h1>練習問題</h1>
+
+    <p>変数fruitを空っぽのオブジェクトで作成してください。</p>
+
+    <p>nameキーに、値"apple"を代入してください。</p>
+
+    <p>weightキーに、値150を代入してください。</p>
+
+    <p>コンソールにfruitオブジェクトを表示してください。</p>
+  </body>
+
+  <script type="application/javascript">
+    var fruit;
+
+    console.log(fruit);
+  </script>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+          sans-serif;
+        margin: 2em;
+      }
+      pre {
+        padding-top: 1em;
+        padding-left: 2em;
+        margin: 1em;
+        width: 90%;
+        overflow: auto;
+        background-color: #f6f6f6;
+        font-family: "MS Gothic", monospace;
+        line-height: 150%;
+      }
+      blockquote {
+        position: relative;
+        padding: 0.5em 1em 1em 2em;
+        box-sizing: border-box;
+        background: #f5f5f5;
+        color: #777777;
+        border-left: 4px solid #9dd4ff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>等しいかどうかの判定（ == と === ）</h1>
+
+    <p>==は比較対象を同じ型に変換してから中身を比較します</p>
+
+    <p>===は型と値が同じかどうかを判定します。</p>
+
+    <p>
+      等しいかどうかの判定に==を使ってもプログラムは動きますが、必ず===を使うようにしましょう。
+    </p>
+
+    <pre>
+var a = 51;
+var b = '51';
+
+if (a == b) {
+  console.log("==で判定すると、aとbは同じ");
+} else {
+  console.log("==で判定すると、aとbは同じではない");
+}
+
+if (a === b) {
+  console.log("===で判定すると、aとbは同じ");
+} else {
+  console.log("===で判定すると、aとbは同じではない");
+}
+    </pre>
+
+    <h1>true, falseの省略</h1>
+
+    <p>if文の()の中には真偽値（trueかfalse）を書きます。</p>
+
+    <p>
+      変数の中身が0や未定義状態だとfalseとして判定されます。
+      これをうまく使って「変数に中身があるなら」というのを次のように書きます。
+    </p>
+
+    <pre>
+if (a) {
+  // aに中身が入っているなら
+}
+    </pre>
+
+    <p>!をつけると真偽値を反転します。</p>
+
+    <pre>
+if (!a) {
+  // aがfalse、すなわちaの中身が0とか空っぽなら、
+}
+    </pre>
+
+    <h1>練習問題</h1>
+
+    <p>
+      変数aにはtrueかfalseがランダムに入っています。aがtrueの時には「真です」を、falseの時には「偽です」を表示してください。
+    </p>
+
+    <p>
+      ブラウザのF5キーを何度か叩いて結果を確認してください。
+    </p>
+
+  </body>
+
+  <script type="application/javascript">
+    var a = (Math.random() < 0.5);
+    console.log(a);
+
+
+    console.log("真です");
+
+    console.log("偽です");
+
+  </script>
+</html>

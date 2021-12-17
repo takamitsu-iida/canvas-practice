@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+          sans-serif;
+        margin: 2em;
+      }
+      pre {
+        padding-top: 1em;
+        padding-left: 2em;
+        margin: 1em;
+        width: 90%;
+        overflow: auto;
+        background-color: #f6f6f6;
+        font-family: "MS Gothic", monospace;
+        line-height: 150%;
+      }
+      blockquote {
+        position: relative;
+        padding: 0.5em 1em 1em 2em;
+        box-sizing: border-box;
+        background: #f5f5f5;
+        color: #777777;
+        border-left: 4px solid #9dd4ff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>変わった演算子の書き方</h1>
+
+    <p>プログラムを書いていると変数の値を1増やすとか、1減らす、という操作はあまりにも頻出するので、簡単に書けるようになっています。</p>
+
+    <h2>++と--</h2>
+
+    <p>変数の値を1増やすには、このように書きます。</p>
+
+    <pre>
+var i = 0;
+i = i + 1;
+    </pre>
+
+    <p>こう書いても同じです。より短く書けます。</p>
+
+    <pre>
+var i = 0;
+i++;
+    </pre>
+
+    <p>減らす場合も同じです。</p>
+
+    <pre>
+var i = 10;
+i = i - 1;
+    </pre>
+
+    <p>こう書いても同じです。より短く書けます。</p>
+
+    <pre>
+var i = 10;
+i--;
+    </pre>
+
+    <h2>+= と -=</h2>
+
+    <p>増やしたり減らしたりするのが1ではない場合も多いです。その場合は++ではなく+=を使います。マイナスの場合は-=を使います。</p>
+
+    <p>これは変数を2増やす書き方ですが、</p>
+
+    <pre>
+var i = 1;
+i = i + 2;
+    </pre>
+
+    <p>このように書くこともできます。</p>
+
+    <pre>
+var i = 1;
+i += 2;
+    </pre>
+  </body>
+
+  <h1>練習問題</h1>
+
+  <p>すべて簡略した書き方に変えてください。</p>
+
+  <script type="application/javascript">
+    var i = 10;
+
+    i = i + 1;
+    console.log(i);
+
+    i = i - 1;
+    console.log(i);
+
+    i = i + 10;
+    console.log(i);
+
+    i = i - 10;
+    console.log(i);
+  </script>
+</html>

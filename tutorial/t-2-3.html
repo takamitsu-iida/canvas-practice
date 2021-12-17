@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+          sans-serif;
+        margin: 2em;
+      }
+      pre {
+        padding-top: 1em;
+        padding-left: 2em;
+        margin: 1em;
+        width: 90%;
+        overflow: auto;
+        background-color: #f6f6f6;
+        font-family: "MS Gothic", monospace;
+        line-height: 150%;
+      }
+      blockquote {
+        position: relative;
+        padding: 0.5em 1em 1em 2em;
+        box-sizing: border-box;
+        background: #f5f5f5;
+        color: #777777;
+        border-left: 4px solid #9dd4ff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>変数</h1>
+
+    <p>
+      変数を使うには、最初に宣言が必要です。
+      変数の名前には、アルファベットと記号、数字が使えます。
+    </p>
+
+    <pre>
+var myName;
+var a;
+var a2;
+var hasDone;
+var isStarted;
+    </pre>
+
+    <p>
+      ただし、<strong>先頭の文字はアルファベットでなければいけません。</strong>
+    </p>
+
+    <p>ダメな例</p>
+
+    <pre>
+var 2a;
+    </pre>
+
+    <p>JavaScriptの中で予約されている単語も使えません。</p>
+
+    <p>ダメな例</p>
+
+    <pre>
+var console;
+var Math;
+var document;
+var false;
+var true;
+    </pre>
+
+    <p>宣言した変数に値を入れるには、イコール記号を使います。</p>
+
+    <p>aという変数に1を代入するにはこのようにします。</p>
+
+    <pre>
+var a;
+a = 1;
+    </pre>
+
+    <p>
+      イコール記号を使っていますが、aは1と等しい、ではありません。aに1を代入、です。
+    </p>
+
+    <p>宣言と同時に値を入れる書き方もあります。この書き方もよく使われます。</p>
+
+    <pre>
+var a = 1;
+    </pre>
+
+    <h2>var と let と const</h2>
+
+    <p>
+      最新のJavaScriptの仕様では、varで宣言するのではなく、letとconstを使うように推奨されています。
+    </p>
+
+    <p>
+      letで宣言した変数は特定された範囲内でしか使えないように制限されています。
+    </p>
+    <p>
+      constは定数で、変更できません。変更してはいけないモノに対して使います。
+    </p>
+    <p>
+      letとconstは制限が強いですが、そのおかげでバグの少ないプログラムを書けるようになっています。
+    </p>
+
+    <blockquote>
+      <p>【参考文献】</p>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/var"
+        >https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/var</a
+      >
+    </blockquote>
+
+    <h1>練習問題</h1>
+
+    <p>変数myNameに自分の名前を文字列として代入して、その変数の中身をコンソールに表示してください。</p>
+
+  </body>
+
+  <script type="application/javascript">
+    var myName;
+
+    // 自分の名前を代入
+
+    // コンソールに表示
+
+  </script>
+</html>

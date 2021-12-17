@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+          sans-serif;
+        margin: 2em;
+      }
+      pre {
+        padding-top: 1em;
+        padding-left: 2em;
+        margin: 1em;
+        width: 90%;
+        overflow: auto;
+        background-color: #f6f6f6;
+        font-family: "MS Gothic", monospace;
+        line-height: 150%;
+      }
+      blockquote {
+        position: relative;
+        padding: 0.5em 1em 1em 2em;
+        box-sizing: border-box;
+        background: #f5f5f5;
+        color: #777777;
+        border-left: 4px solid #9dd4ff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>データ型</h1>
+
+    <p>JavaScriptにおいて数字の1と文字の"1"は違います。</p>
+
+    <p>
+      変数に格納されているデータの種類をタイプとか型といい、プログラムの中では明確に区別されます。
+    </p>
+
+    <p>
+      変数がどのような型になっているのかを意識しておかないと、期待通りの動作にならず、結果として時間を無駄につかうことになります。
+    </p>
+
+    <h2>文字列 (String)</h2>
+
+    <p>
+      値が文字列であることを示すには、引用符で囲む必要があります。一重用符'でも二重引用符"でも構いません。
+    </p>
+
+    <p>typeof演算子では"string"と表示されます。</p>
+
+    <pre>
+var myName = "飯田";
+    </pre>
+
+    <h2>数字 (Number)</h2>
+
+    <p>数字には引用符がありません。</p>
+
+    <p>typeof演算子では"number"と表示されます。</p>
+
+    <pre>
+var myNumber = 10;
+    </pre>
+
+    <h2>論理値 (Boolean)</h2>
+
+    <p>trueとfalseは特別なキーワードで、引用符は必要ありません。</p>
+
+    <p>typeof演算子では"boolean"と表示されます。</p>
+
+    <pre>
+var hasDone = false;
+    </pre>
+
+    <h2>配列 (Array)</h2>
+
+    <p>複数の値を格納できる構造です。</p>
+
+    <pre>
+var myList = ['Bob', 'Steve', 10, 20];
+    </pre>
+
+    <p>
+      配列の中の値を取り出すには、何番目にある要素なのかを数字で指定します。
+    </p>
+
+    <pre>
+var a = myList[0];
+    </pre>
+
+    <h2>オブジェクト (Object)</h2>
+
+    <p>
+      <strong
+        >JavaScriptのすべてはオブジェクトであり、変数として格納することができます。</strong
+      >
+    </p>
+
+    <blockquote>
+      <p>参考文献</p>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Grammar_and_Types#data_structures_and_types"
+        >https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Grammar_and_Types#data_structures_and_types</a
+      >
+    </blockquote>
+
+    <h1>練習問題</h1>
+
+    <p>a1, a2, a3, a4の型が何か確認してください。</p>
+  </body>
+
+  <script type="application/javascript">
+    var a1 = 123;
+    var a2 = "123";
+    var a3 = 12 + 3;
+    var a4 = "12" + "3";
+
+    console.log("a1");
+    console.log(a1);
+    console.log(typeof a1);
+
+    console.log("a2");
+    console.log(a2);
+    console.log(typeof a2);
+
+    console.log("a3");
+    console.log(a3);
+    console.log(typeof a3);
+
+    console.log("a4");
+    console.log(a4);
+    console.log(typeof a4);
+  </script>
+</html>
