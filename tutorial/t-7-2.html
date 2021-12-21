@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <h1>重ね合わせ</h1>
+
+    <p>同じコンテキストに描画すると、後から描いたものが上にきます。</p>
+
+    <p>
+      <canvas id="canvas1"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      var canvas = document.getElementById("canvas1");
+      canvas.width = canvas.height = 300;
+      var ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "green";
+      ctx.fillRect(10, 10, 150, 100);
+
+      ctx.fillStyle = "blue";
+      ctx.fillRect(50, 50, 150, 100);
+    </script>
+
+    <p>canvasでは前に描いたものと重なり合う部分をどうするか、を選べます。</p>
+
+    <p>
+      これをうまく使うことで、繰り返し描画をしたときに美しいエフェクトになります。
+    </p>
+
+    <blockquote>
+      <p>参考文献</p>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://developer.mozilla.org/ja/docs/Web/API/Canvas_API/Tutorial/Compositing"
+        >https://developer.mozilla.org/ja/docs/Web/API/Canvas_API/Tutorial/Compositing</a
+      >
+    </blockquote>
+
+    <p>
+      参考文献を見ると色々ありますが、lighterを指定すると、重なった部分のカラー値が加算されます。
+    </p>
+
+    <p>
+      光の三原色と同じでコンピュータの世界でも色は重ねるほど白に近づきます。
+    </p>
+
+    <p>
+      色が加算されるということは、より白く、より光った印象になる、ということです。
+    </p>
+
+    <pre>
+// デフォルトの設定です。新たな図形をすでにあるCanvasの内容の上に描きます。
+ctx.globalCompositeOperation = "source-over";
+
+// 新たな図形と描画先 Canvas の内容が重なる部分は、カラー値が加算されます。
+ctx.globalCompositeOperation = "lighter";
+    </pre>
+
+    <p>
+      <canvas id="canvas2"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      var canvas = document.getElementById("canvas2");
+      canvas.width = canvas.height = 300;
+      var ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "green";
+      ctx.fillRect(10, 10, 150, 100);
+
+      // 青色の四角を描く前にこの行を追加すると、重なった部分は色が加算され、白に近づく
+      ctx.globalCompositeOperation = "lighter";
+
+      ctx.fillStyle = "blue";
+      ctx.fillRect(50, 50, 150, 100);
+    </script>
+
+    <h1>半透明を使う</h1>
+
+    <p>今度は黒い背景に半透明のオレンジの四角形を重ねてみます</p>
+
+    <p>色を半透明にするには、rgba(red, green, blue, alpha)を指定します。</p>
+
+    <p>
+      red, green, blue は 0～255
+      の数字で指定します。
+    </p>
+
+    <p>0,0,0だと黒、255,255,255だと白になります。</p>
+
+    <p>
+      alphaは0.0～1.0の実数で指定します。0.0が完全に透明な状態、1.0が不透過、です。
+    </p>
+
+    <p>
+      <canvas id="canvas3"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      var canvas = document.getElementById("canvas3");
+      canvas.width = canvas.height = 300;
+      var ctx = canvas.getContext("2d");
+
+      // 背景を黒で塗りつぶす
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, 300, 300);
+
+      ctx.globalCompositeOperation = "lighter";
+
+      var x = 0;
+      var y = 0;
+
+      // あえて同じ書き方を繰り返してるけど、for文を使うと短く綺麗に書けます
+      x += 10;
+      y += 10;
+      ctx.fillStyle = "rgba(255,165,0,0.4)";
+      ctx.fillRect(x, y, 150, 100);
+
+      x += 10;
+      y += 10;
+      ctx.fillStyle = "rgba(255,165,0,0.4)";
+      ctx.fillRect(x, y, 150, 100);
+
+      x += 10;
+      y += 10;
+      ctx.fillStyle = "rgba(255,165,0,0.4)";
+      ctx.fillRect(x, y, 150, 100);
+
+      x += 10;
+      y += 10;
+      ctx.fillStyle = "rgba(255,165,0,0.4)";
+      ctx.fillRect(x, y, 150, 100);
+    </script>
+
+    <p>
+      今度はオレンジの四角形を描いた後に、背景と同じ色の半透明の四角形を上書きします。
+    </p>
+
+    <p>
+      すると最初に描いたものが徐々に消えていくようなエフェクトがかかります。
+    </p>
+
+    <p>
+      <canvas id="canvas4"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      var canvas = document.getElementById("canvas4");
+      canvas.width = canvas.height = 300;
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, 300, 300);
+
+      var x = 10;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = "rgba(255,165,1)";
+      ctx.fillRect(x, 10, 50, 50);
+
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, 300, 300);
+
+      x += 50;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = "rgba(255,165,0,1)";
+      ctx.fillRect(x, 10, 50, 50);
+
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, 300, 300);
+
+      x += 50;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = "rgba(255,165,0,1)";
+      ctx.fillRect(x, 10, 50, 50);
+
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, 300, 300);
+
+      x += 50;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = "rgba(255,165,0,1)";
+      ctx.fillRect(x, 10, 50, 50);
+    </script>
+
+    <p>
+      半透明の背景色を間に入れながら、重ね合わせていくと、このようなグラデーションがかかります。
+    </p>
+
+    <p>
+      10回描画していますが、半透明の背景色を重ねているので、最初に描いたものは背景色と同化して見えなくなっています。
+    </p>
+
+    <p>
+      <canvas id="canvas5"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      var canvas = document.getElementById("canvas5");
+      canvas.width = canvas.height = 300;
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, 300, 300);
+
+      for (let i = 0; i < 10; i++) {
+        ctx.globalCompositeOperation = "lighter";
+        ctx.fillStyle = "rgba(255,165,0,0.4)";
+        ctx.fillRect(i * 5, i * 5, 150, 100);
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.fillRect(0, 0, 300, 300);
+      }
+    </script>
+
+    <h1>練習問題</h1>
+
+    <p>
+      id="c"のcanvasがあります。そこに100個の丸を描くようにプログラムを改造してください。
+    </p>
+
+    <p>
+      半透明の黒で上書きするときに、透明度アルファを変えて試してください（例：0.01、0.05、0.1というように）。
+    </p>
+
+    <canvas id="c"></canvas>
+
+    <p class="prevnext">
+      <a href="t-7-1.html" class="prev">&laquo; 前</a
+      ><a href="t-7-3.html" class="next">次 &raquo;</a>
+    </p>
+  </body>
+
+  <script type="application/javascript">
+    var canvas = document.getElementById("c");
+    canvas.width = canvas.height = 300;
+    var ctx = canvas.getContext("2d");
+
+    // 背景を黒に塗りつぶす
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, 300, 300);
+
+    // 円の中心座標
+    var x = 10;
+    var y = 10;
+
+    // 以下の繰り返しを100回繰り返してください。
+
+    // 中心(x, y)、半径10の円を描く
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
+    ctx.fillStyle = "rgba(255, 165, 0, 1)";
+    ctx.fill();
+
+    // 半透明の黒で上書きする
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillRect(0, 0, 300, 300);
+
+    // x座標、y座標に2を足して、円を描く
+    x += 2;
+    y += 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
+    ctx.fillStyle = "rgba(255, 165, 0, 1)";
+    ctx.fill();
+
+    // 半透明の黒で上書きする
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillRect(0, 0, 300, 300);
+
+    // x座標、y座標に2を足して、円を描く
+    x += 2;
+    y += 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
+    ctx.fillStyle = "rgba(255, 165, 0, 1)";
+    ctx.fill();
+
+    // 半透明の黒で上書きする
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillRect(0, 0, 300, 300);
+  </script>
+</html>

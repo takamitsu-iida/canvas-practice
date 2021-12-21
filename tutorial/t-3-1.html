@@ -2,33 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <style type="text/css">
-      body {
-        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
-          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
-          sans-serif;
-        margin: 2em;
-      }
-      pre {
-        padding-top: 1em;
-        padding-left: 2em;
-        margin: 1em;
-        width: 90%;
-        overflow: auto;
-        background-color: #f6f6f6;
-        font-family: "MS Gothic", monospace;
-        line-height: 150%;
-      }
-      blockquote {
-        position: relative;
-        padding: 0.5em 1em 1em 2em;
-        box-sizing: border-box;
-        background: #f5f5f5;
-        color: #777777;
-        border-left: 4px solid #9dd4ff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
@@ -51,20 +25,29 @@
 
     <p>引数は英語でargumentと言いますので、argで表現されることが多いです。</p>
 
-<pre>
+    <pre>
 function 関数名 (arg1, arg2) {
   // 処理を
   return 戻り値;
 }
-</pre>
+</pre
+    >
 
-    <p>例として、底辺と高さを引数としてとり、三角形の面積を計算して返す関数を考えてみます。</p>
+    <p>
+      例として、底辺と高さを引数としてとり、三角形の面積を計算して返す関数を考えてみます。
+    </p>
 
-    <p>関数名は三角形（triangle）の面積(area)を計算(calculate)するので、calcTriangleAreaとします。</p>
+    <p>
+      関数名は三角形（triangle）の面積(area)を計算(calculate)するので、calcTriangleAreaとします。
+    </p>
 
-    <p>引数は２つあり、一つは底辺なのでbottomという名前にします。もう一つは高さなのでheightとします。</p>
+    <p>
+      引数は２つあり、一つは底辺なのでbottomという名前にします。もう一つは高さなのでheightとします。
+    </p>
 
-    <p>関数の定義としてはこのようになります。関数を宣言する最後の中括弧にセミコロン;は書きません。</p>
+    <p>
+      関数の定義としてはこのようになります。関数を宣言する最後の中括弧にセミコロン;は書きません。
+    </p>
 
     <pre>
 function calcTriangleArea(bottom, height) {
@@ -72,7 +55,9 @@ function calcTriangleArea(bottom, height) {
 }
     </pre>
 
-    <p>底辺X高さ÷2を計算してreturnで戻しますので、完成した関数はこうなります。</p>
+    <p>
+      底辺X高さ÷2を計算してreturnで戻しますので、完成した関数はこうなります。
+    </p>
 
     <pre>
 function calcTriangleArea(bottom, height) {
@@ -81,7 +66,9 @@ function calcTriangleArea(bottom, height) {
 }
     </pre>
 
-    <p>この関数が宣言されていれば、この関数を呼び出すことでいつでも三角形の面積を計算できます。</p>
+    <p>
+      この関数が宣言されていれば、この関数を呼び出すことでいつでも三角形の面積を計算できます。
+    </p>
 
     <pre>
 var b = 10;
@@ -92,13 +79,19 @@ var area = calcTriangleArea(b, h);
 console.log("面積は" + area + "です");
     </pre>
 
-  <h1>問題</h1>
+    <h1>問題</h1>
 
-  <p>四角形（Rectangle）の面積を求めるcalcRectangleArea関数を作成してください。</p>
+    <p>
+      四角形（Rectangle）の面積を求めるcalcRectangleArea関数を作成してください。
+    </p>
 
-  <p>引数はwidth（長さ）とheight（高さ）としてください。</p>
+    <p>引数はwidth（長さ）とheight（高さ）としてください。</p>
 
-</body>
+    <p class="prevnext">
+      <a href="t-2-9.html" class="prev">&laquo; 前</a
+      ><a href="t-3-2.html" class="next">次 &raquo;</a>
+    </p>
+  </body>
 
   <script type="application/javascript">
     var w = 10;

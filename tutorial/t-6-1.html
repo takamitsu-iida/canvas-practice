@@ -2,33 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <style type="text/css">
-      body {
-        font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans",
-          "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
-          sans-serif;
-        margin: 2em;
-      }
-      pre {
-        padding-top: 1em;
-        padding-left: 2em;
-        margin: 1em;
-        width: 90%;
-        overflow: auto;
-        background-color: #f6f6f6;
-        font-family: "MS Gothic", monospace;
-        line-height: 150%;
-      }
-      blockquote {
-        position: relative;
-        padding: 0.5em 1em 1em 2em;
-        box-sizing: border-box;
-        background: #f5f5f5;
-        color: #777777;
-        border-left: 4px solid #9dd4ff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
@@ -36,11 +10,17 @@
 
     <p>クラスはオブジェクトを作るための設計図です。</p>
 
-    <p>オブジェクトの中で使う値は違うけど、動作としては同じオブジェクトをたくさん作るときにクラスを使います。</p>
+    <p>
+      オブジェクトの中で使う値は違うけど、動作としては同じオブジェクトをたくさん作るときにクラスを使います。
+    </p>
 
-    <p>たとえば四角形（Rectangle）を考えたとき、幅（width）と高さ（height）の情報が必要です。</p>
+    <p>
+      たとえば四角形（Rectangle）を考えたとき、幅（width）と高さ（height）の情報が必要です。
+    </p>
 
-    <p>いままで学習してきた知識を総動員して幅10、高さ10の四角形を表すオブジェクトを作るなら、こうなります。</p>
+    <p>
+      いままで学習してきた知識を総動員して幅10、高さ10の四角形を表すオブジェクトを作るなら、こうなります。
+    </p>
 
     <pre>
 var rect = {};  // 空っぽのオブジェクトを作る
@@ -71,15 +51,21 @@ var rect = {
 };
     </pre>
 
-    <p>四角形を表すこのオブジェクトを一つしか作らないなら、この書き方で十分です。</p>
+    <p>
+      四角形を表すこのオブジェクトを一つしか作らないなら、この書き方で十分です。
+    </p>
 
-    <p>幅や高さを変えた四角形のオブジェクトをたくさん作る必要があるなら、クラスの出番です。</p>
+    <p>
+      幅や高さを変えた四角形のオブジェクトをたくさん作る必要があるなら、クラスの出番です。
+    </p>
 
     <h2>クラス宣言</h2>
 
     <p>クラスはオブジェクトを作るための設計図です。</p>
 
-    <p>constructor()という特別な関数の中で、どんな値をもたせたいかを設計します。</p>
+    <p>
+      constructor()という特別な関数の中で、どんな値をもたせたいかを設計します。
+    </p>
 
     <pre>
 class Rectangle {
@@ -90,25 +76,29 @@ class Rectangle {
 }
     </pre>
 
-    <p>これは設計図なので、実際に使うにはオブジェクトを作る必要があります。</p>
+    <p>thisは「自分自身」という特別な意味を持っています。</p>
 
-    <p>幅10、高さ10の四角形のオブジェクトは次のようにすることで作り出せます。</p>
+    <p>this.width = width; は自分自身の中にwidthというキーを作り、値として引数で与えられたwidthを代入します。</p>
+
+    <p>this.height = height; は自分自身の中にheightというキーを作り、値として引数で与えられたheightを代入します。</p>
+
+    <p>これは設計図を宣言しただけなので、実際に使うにはオブジェクトを作る必要があります。</p>
+
+    <p>
+      幅10、高さ10の四角形のオブジェクトは次のようにすることで作り出せます。
+    </p>
 
     <pre>
 var rect = new Rectangle(10, 10);
     </pre>
 
-    <p>幅20、高さ20の別の四角形のオブジェクトは、</p>
+    <p>幅20、高さ20の別の四角形のオブジェクトは、次のように作ります。</p>
 
     <pre>
 var rect2 = new Rectangle(20, 20);
     </pre>
 
-    <p>とすれば作れます。</p>
-
     <p>このように、classでオブジェクトの設計図を作り、newで作り出します。</p>
-
-    <p>MDN <a href="">クラス</a></p>
 
     <blockquote>
       <p>【参考文献】</p>
@@ -120,13 +110,25 @@ var rect2 = new Rectangle(20, 20);
       >
     </blockquote>
 
+    <h1>練習問題</h1>
 
+    <p>Userクラスを定義してください。</p>
 
+    <p>Userクラスを作成する時には、nameキーを必要とします。</p>
+
+    <p>Userクラスのオブジェクトを2個作成して、コンソールに表示してください。</p>
+
+    <p class="prevnext">
+      <a href="t-5-1.html" class="prev">&laquo; 前</a
+      ><a href="t-7-1.html" class="next">次 &raquo;</a>
+    </p>
   </body>
 
   <script type="application/javascript">
-    var fruit;
+    var user1 = new User("iida");
+    console.log(user1);
 
-    console.log(fruit);
+    var user2 = new User("takamitsu");
+    console.log(user2);
   </script>
 </html>

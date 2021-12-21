@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <h1>Canvas</h1>
+
+    <p>Canvasを使うとブラウザの中に絵を描けます。</p>
+
+    <p>
+      HTMLで &lt; canvas &gt;
+      を作成しておき、その中にJavaScriptを使って絵を書いていきます。
+    </p>
+
+    <p>
+      JavaScriptで &lt; canvas &gt;
+      要素を取り出しやすくするために、要素にはidを付けておくとよいでしょう。
+    </p>
+
+    <p>
+      見やすくするために、&lt; canvas style="border: solid" &gt; として枠線を付けておきます。
+    </p>
+
+    <canvas id="canvas1" style="border: solid;"></canvas>
+
+    <blockquote>
+      <p>【参考文献】</p>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://developer.mozilla.org/ja/docs/Web/API/Canvas_API"
+        >https://developer.mozilla.org/ja/docs/Web/API/Canvas_API</a
+      >
+    </blockquote>
+
+    <h1>座標</h1>
+
+    <p>
+      平面上の位置はX座標とY座標を指定することで示せます。数学ではX軸は右方向、Y軸は上方向ですが、コンピュータの世界で<strong>Y軸は下方向</strong>です。
+    </p>
+
+    <canvas id="canvas2" style="border: solid;"></canvas>
+
+    <script type="application/javascript">
+      var canvas = document.getElementById("canvas2");
+      canvas.width = 300;
+      canvas.height = 300;
+
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "green";
+      ctx.fillRect(10, 10, 150, 100);
+    </script>
+
+    <p>緑色の四角形を描画したこの命令。</p>
+
+    <pre>
+ctx.fillRect(10, 10, 150, 100);
+    </pre>
+
+    <p>ctxオブジェクトの中にあるfillRect関数を呼び出しています。</p>
+
+    <p>fillRect関数は(x, y, width, height)の順番で引数をとります。</p>
+
+    <p>
+      X座標10、Y座標10、幅150ピクセル、高さ100ピクセル、の四角形（Rectangle）を塗りつぶしています（fill）。
+    </p>
+
+    <h1>練習問題</h1>
+
+    <canvas id="c" style="border-style: solid;"></canvas>
+
+    <p>
+      id="c"のcanvas要素を作っておきましたので、ここに青色の四角形を書いてください。
+    </p>
+
+    <p class="prevnext">
+      <a href="t-6-1.html" class="prev">&laquo; 前</a
+      ><a href="t-7-2.html" class="next">次 &raquo;</a>
+    </p>
+  </body>
+
+  <script type="application/javascript">
+    var canvas;
+
+
+    var ctx;
+
+    // 青色で塗りつぶした四角形を描画
+
+  </script>
+</html>
