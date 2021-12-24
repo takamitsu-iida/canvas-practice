@@ -30,7 +30,7 @@ loop();  // 一度実行すれば、あとは繰り返しloop()が実行され�
     <p>たとえば四角形を描く機能を持ったオブジェクトを作ってみます。</p>
 
     <p>
-      <canvas id="canvas1"></canvas>
+      <canvas id="canvas1" style="border: solid;"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -114,7 +114,7 @@ loop1();
     </p>
 
     <p>
-      <canvas id="canvas2"></canvas>
+      <canvas id="canvas2" style="border: solid;"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -253,7 +253,7 @@ loop2();
     </p>
 
     <p>
-      <canvas id="canvas3"></canvas>
+      <canvas id="canvas3" style="border: solid;"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -342,9 +342,9 @@ var rect5 = new Rect(210, 10, "green");
 
     <p>全部で5個のオブジェクトを作成しています。</p>
 
-    <p>var rects = [];として空っぽの配列を作って、そこに格納してください。</p>
+    <p>var rects = [];として空っぽの配列を作って、そこにこれらオブジェクトを格納してください。</p>
 
-    <p>ループの中では、rects配列からfor文でひとつずつ取り出して、step()を事項してください。</p>
+    <p>ループの中では、rects配列からfor文でひとつずつ取り出してstep()関数を実行してください。</p>
 
     <canvas id="c" style="border: solid"></canvas>
 

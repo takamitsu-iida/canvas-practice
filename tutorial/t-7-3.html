@@ -66,7 +66,7 @@ loop();  // 一度実行すれば、あとは繰り返しloop()が実行され�
     </p>
 
     <p>
-      <canvas id="canvas1"></canvas>
+      <canvas id="canvas1" style="border: solid;"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -100,7 +100,7 @@ loop();  // 一度実行すれば、あとは繰り返しloop()が実行され�
     </p>
 
     <p>
-      <canvas id="canvas2"></canvas>
+      <canvas id="canvas2" style="border: solid;"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -136,7 +136,7 @@ loop();  // 一度実行すれば、あとは繰り返しloop()が実行され�
     <p>canvasの中で動き続けるようにしてみます。</p>
 
     <p>
-      <canvas id="canvas3"></canvas>
+      <canvas id="canvas3" style="border: solid;"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -181,7 +181,7 @@ loop();  // 一度実行すれば、あとは繰り返しloop()が実行され�
 
     <h1>練習問題</h1>
 
-    <p>次のルールで四角形を移動してください。</p>
+    <p>次のルールで四角形を描画してください。</p>
 
     <ul>
       <li>xが280よりも大きくなったら</li>
@@ -263,27 +263,6 @@ loop();  // 一度実行すれば、あとは繰り返しloop()が実行され�
       //   yを10に戻す
       //   diffYを0にして、それ以上上に行かないようにする
       //   diffXを2にして、右に移動するようにする
-
-      if (x > 280) {
-        x = 280;
-        diffX = 0;
-        diffY = 2;
-      }
-      if (y > 280) {
-        y = 280;
-        diffY = 0;
-        diffX = -2;
-      }
-      if (x < 10) {
-        x = 10;
-        diffX = 0;
-        diffY = -2;
-      }
-      if (y < 10) {
-        y = 10;
-        diffY = 0;
-        diffX = 2;
-      }
 
       ctx.fillStyle = "green";
       ctx.fillRect(x, y, 10, 10);
