@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <h1>複数のオブジェクトを描画する</h1>
+
+    <p>canvasに動きをつけるのは、この書き方を使います。</p>
+
+    <pre>
+function loop () {
+  window.requestAnimationFrame(loop);
+  // 描画処理を実行
+}
+
+loop();  // 一度実行すれば、あとは繰り返しloop()が実行される
+    </pre>
+
+    <p>
+      描画するものが複数あって、バラバラな動きをするときには、描画処理の部分が複雑になりがちです。
+    </p>
+
+    <p>
+      そういったときには、描画処理を持ったオブジェクトを作ると、短く、見やすく書けます。
+    </p>
+
+    <p>たとえば四角形を描く機能を持ったオブジェクトを作ってみます。</p>
+
+    <p>
+      <canvas id="canvas1"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      (function () {
+        var canvas = document.getElementById("canvas1");
+        canvas.width = canvas.height = 300;
+        var ctx = canvas.getContext("2d");
+
+        var rect1 = {};
+        rect1.color = "green";
+        rect1.x = 10;
+        rect1.y = 10;
+        rect1.diffX = 2;
+        rect1.diffY = 0;
+        rect1.step = function () {
+          rect1.x = rect1.x + rect1.diffX;
+          rect1.y = rect1.y + rect1.diffY;
+
+          if (rect1.x > 280) {
+            rect1.x = 280;
+            rect1.diffX = 0;
+            rect1.diffY = 2;
+          }
+
+          if (rect1.y > 280) {
+            rect1.y = 280;
+            rect1.diffY = 0;
+            rect1.diffX = -2;
+          }
+
+          if (rect1.x < 10) {
+            rect1.x = 10;
+            rect1.diffX = 0;
+            rect1.diffY = -2;
+          }
+
+          if (rect1.y < 10) {
+            rect1.y = 10;
+            rect1.diffY = 0;
+            rect1.diffX = 2;
+          }
+
+          ctx.fillStyle = rect1.color;
+          ctx.fillRect(rect1.x, rect1.y, 10, 10);
+        };
+
+        function loop1() {
+          window.requestAnimationFrame(loop1);
+
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, 300, 300);
+
+          rect1.step();
+        }
+
+        loop1();
+      })();
+    </script>
+
+    <pre>
+function loop1() {
+  window.requestAnimationFrame(loop1);
+
+  // 白で上書き
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, 300, 300);
+
+  // rect1オブジェクトに描画させる
+  rect1.step();
+}
+
+loop1();
+    </pre>
+
+    <p>
+      rect1というオブジェクトの中にstep()関数を作ったので、ループの中ではそれを呼び出すだけですんでいます。
+    </p>
+
+    <p>
+      今度はオブジェクトを２個作ってみます。それぞれ開始位置を変えてみます。
+    </p>
+
+    <p>
+      <canvas id="canvas2"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      (function () {
+        var canvas = document.getElementById("canvas2");
+        canvas.width = canvas.height = 300;
+        var ctx = canvas.getContext("2d");
+
+        var rect1 = {};
+        rect1.color = "green";
+        rect1.x = 10;
+        rect1.y = 10;
+        rect1.diffX = 2;
+        rect1.diffY = 0;
+        rect1.step = function () {
+          rect1.x = rect1.x + rect1.diffX;
+          rect1.y = rect1.y + rect1.diffY;
+
+          if (rect1.x > 280) {
+            rect1.x = 280;
+            rect1.diffX = 0;
+            rect1.diffY = 2;
+          }
+
+          if (rect1.y > 280) {
+            rect1.y = 280;
+            rect1.diffY = 0;
+            rect1.diffX = -2;
+          }
+
+          if (rect1.x < 10) {
+            rect1.x = 10;
+            rect1.diffX = 0;
+            rect1.diffY = -2;
+          }
+
+          if (rect1.y < 10) {
+            rect1.y = 10;
+            rect1.diffY = 0;
+            rect1.diffX = 2;
+          }
+
+          ctx.fillStyle = rect1.color;
+          ctx.fillRect(rect1.x, rect1.y, 10, 10);
+        };
+
+        var rect2 = {};
+        rect2.color = "blue";
+        rect2.x = 280;
+        rect2.y = 280;
+        rect2.diffX = 2;
+        rect2.diffY = 0;
+        rect2.step = function () {
+          rect2.x = rect2.x + rect2.diffX;
+          rect2.y = rect2.y + rect2.diffY;
+
+          if (rect2.x > 280) {
+            rect2.x = 280;
+            rect2.diffX = 0;
+            rect2.diffY = 2;
+          }
+
+          if (rect2.y > 280) {
+            rect2.y = 280;
+            rect2.diffY = 0;
+            rect2.diffX = -2;
+          }
+
+          if (rect2.x < 10) {
+            rect2.x = 10;
+            rect2.diffX = 0;
+            rect2.diffY = -2;
+          }
+
+          if (rect2.y < 10) {
+            rect2.y = 10;
+            rect2.diffY = 0;
+            rect2.diffX = 2;
+          }
+
+          ctx.fillStyle = rect2.color;
+          ctx.fillRect(rect2.x, rect2.y, 10, 10);
+        };
+
+        function loop2() {
+          window.requestAnimationFrame(loop2);
+
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, 300, 300);
+
+          rect1.step();
+          rect2.step();
+        }
+
+        loop2();
+      })();
+    </script>
+
+    <pre>
+function loop2() {
+  window.requestAnimationFrame(loop2);
+
+  // 白で上書き
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, 300, 300);
+
+  // rect1オブジェクトに描画させる
+  rect1.step();
+  // rect2オブジェクトに描画させる
+  rect2.step();
+}
+
+loop2();
+    </pre>
+
+    <p>ループする部分はすっきりと書けています。</p>
+
+    <p>
+      ですが、rect1とrect2は同じような処理をしているのに、ずいぶんと長いプログラムになっています。
+    </p>
+
+    <p>
+      オブジェクトを３個、４個と作り出すことを考えると、これではいけません。
+    </p>
+
+    <p>
+      こういうときは設計図を先につくって、設計図をもとにオブジェクトを生み出したほうがいいでしょう。
+    </p>
+
+    <p>オブジェクトの設計図はクラス（class）です。</p>
+
+    <p>四角形（英語でRectangle）を描画するクラスRectを作ってみます。</p>
+
+    <p>
+      初期座標(x, y)と色はオブジェクト化するときに指定できるようにしておきます。
+    </p>
+
+    <p>
+      <canvas id="canvas3"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      (function () {
+        var canvas = document.getElementById("canvas3");
+        canvas.width = canvas.height = 300;
+        var ctx = canvas.getContext("2d");
+
+        class Rect {
+          constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+
+            this.diffX = 2;
+            this.diffY = 0;
+          }
+
+          step() {
+            this.x = this.x + this.diffX;
+            this.y = this.y + this.diffY;
+
+            if (this.x > 280) {
+              this.x = 280;
+              this.diffX = 0;
+              this.diffY = 2;
+            }
+
+            if (this.y > 280) {
+              this.y = 280;
+              this.diffY = 0;
+              this.diffX = -2;
+            }
+
+            if (this.x < 10) {
+              this.x = 10;
+              this.diffX = 0;
+              this.diffY = -2;
+            }
+
+            if (this.y < 10) {
+              this.y = 10;
+              this.diffY = 0;
+              this.diffX = 2;
+            }
+
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, 10, 10);
+          }
+        }
+
+        var rect1 = new Rect(10, 10, "blue");
+        var rect2 = new Rect(60, 10, "green");
+        var rect3 = new Rect(110, 10, "red");
+        var rect4 = new Rect(160, 10, "purple");
+        var rect5 = new Rect(210, 10, "pink");
+
+        function loop3() {
+          window.requestAnimationFrame(loop3);
+
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, 300, 300);
+
+          rect1.step();
+          rect2.step();
+          rect3.step();
+          rect4.step();
+          rect5.step();
+        }
+
+        loop3();
+      })();
+    </script>
+
+    <h1>練習問題</h1>
+
+    <p>背景を黒にして、各ステップで半透明の黒で上書きすると尾を引くようなエフェクトになります。</p>
+
+    <pre>
+var rect1 = new Rect(10, 10, "green");
+var rect2 = new Rect(60, 10, "green");
+var rect3 = new Rect(110, 10, "green");
+var rect4 = new Rect(160, 10, "green");
+var rect5 = new Rect(210, 10, "green");
+    </pre>
+
+    <p>全部で5個のオブジェクトを作成しています。</p>
+
+    <p>var rects = [];として空っぽの配列を作って、そこに格納してください。</p>
+
+    <p>ループの中では、rects配列からfor文でひとつずつ取り出して、step()を事項してください。</p>
+
+    <canvas id="c" style="border: solid"></canvas>
+
+    <p class="prevnext">
+      <a href="t-7-3.html" class="prev">&laquo; 前</a
+      ><a href="t-7-4.html" class="next">次 &raquo;</a>
+    </p>
+  </body>
+
+  <!-- 練習問題 -->
+
+  <script type="application/javascript">
+    var canvas = document.getElementById("c");
+    canvas.width = canvas.height = 300;
+    var ctx = canvas.getContext("2d");
+
+    class Rect {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+
+        this.diffX = 2;
+        this.diffY = 0;
+      }
+
+      step() {
+        this.x = this.x + this.diffX;
+        this.y = this.y + this.diffY;
+
+        if (this.x > 280) {
+          this.x = 280;
+          this.diffX = 0;
+          this.diffY = 2;
+        }
+
+        if (this.y > 280) {
+          this.y = 280;
+          this.diffY = 0;
+          this.diffX = -2;
+        }
+
+        if (this.x < 10) {
+          this.x = 10;
+          this.diffX = 0;
+          this.diffY = -2;
+        }
+
+        if (this.y < 10) {
+          this.y = 10;
+          this.diffY = 0;
+          this.diffX = 2;
+        }
+
+        ctx.globalCompositeOperation = "lighter";
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, 10, 10);
+      }
+    }
+
+    var rect1 = new Rect(10, 10, "green");
+    var rect2 = new Rect(60, 10, "green");
+    var rect3 = new Rect(110, 10, "green");
+    var rect4 = new Rect(160, 10, "green");
+    var rect5 = new Rect(210, 10, "green");
+
+    // var rects = [];
+    // rects配列にrect1からrect5までを格納してください。
+
+    function loop() {
+      window.requestAnimationFrame(loop);
+
+      // 半透明の黒で上書きする
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, 300, 300);
+
+      // rects配列からオブジェクトを取り出してstep()を実行するように
+      // for文で置き換えてください
+      rect1.step();
+      rect2.step();
+      rect3.step();
+      rect4.step();
+      rect5.step();
+    }
+
+    loop();
+  </script>
+</html>

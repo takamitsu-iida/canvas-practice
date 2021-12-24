@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <h1>アニメーションフレーム</h1>
+
+    <p>時間間隔を置いて描画することで動きのあるアニメーションになります。</p>
+
+    <p>
+      描画対象をフレームといいます。1秒間に何枚のフレームを表示するか、で滑らかさが変わります
+    </p>
+
+    <p>
+      一般的にアニメーションや映画は24フレーム/秒、テレビゲームは30フレーム/秒もしくは60フレーム/秒で作られることが多いです。
+    </p>
+
+    <p>
+      60分の1秒、というのはコンピュータの世界では短い時間ではなく、その間に新しい図形を描画するのは簡単なことです。
+    </p>
+
+    <p>
+      JavaScriptにはsetTimeout()という組み込み関数があり、これを使うと指定した時間後に関数を実行できます。
+    </p>
+
+    <p>
+      そのやり方でもよいのですが、JavaScriptにはもう一つ、アニメーション用に組み込み関数が用意されています。
+    </p>
+
+    <blockquote>
+      <p>参考文献</p>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://developer.mozilla.org/ja/docs/Web/API/Window/requestAnimationFrame"
+        >https://developer.mozilla.org/ja/docs/Web/API/Window/requestAnimationFrame</a
+      >
+    </blockquote>
+
+    <p>
+      描画する関数を準備して、window.requestAnimationFrame()にその関数を渡してあげると、繰り返しその関数が実行されるようになります。
+    </p>
+
+    <p>たいていの場合は1秒間に60回、実行されます。</p>
+
+    <pre>
+function loop () {
+  window.requestAnimationFrame(loop);
+
+  // 描画処理を実行
+
+}
+
+loop();  // 一度実行すれば、あとは繰り返しloop()が実行される
+    </pre>
+
+    <p>
+      同じ場所に同じモノを描画しても上書きされるだけですので、ちょっとずつ描画する場所を変えるようにすると動いて見えます。
+    </p>
+
+    <p>
+      F5キーを押してこのページを再読み込みすると、緑色の四角が少しずつ場所を変えて描画されていきます。
+    </p>
+
+    <p>
+      <canvas id="canvas1"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      (function () {
+        var canvas = document.getElementById("canvas1");
+        canvas.width = canvas.height = 300;
+        var ctx = canvas.getContext("2d");
+
+        var x = 10;
+        var y = 10;
+
+        function loop1() {
+          window.requestAnimationFrame(loop1);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 10, 10);
+
+          x = x + 2;
+          y = y + 2;
+        }
+
+        loop1();
+      })();
+    </script>
+
+    <p>
+      確かに動いてはいますが、前に描いたフレームに上書きしていますので、四角形が重なってしまっています。
+    </p>
+
+    <p>
+      そこで前のフレームを真っ白な状態に戻してから四角形を描画するようにしてみます。
+    </p>
+
+    <p>
+      <canvas id="canvas2"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      (function () {
+        var canvas = document.getElementById("canvas2");
+        canvas.width = canvas.height = 300;
+        var ctx = canvas.getContext("2d");
+
+        var x = 10;
+        var y = 10;
+
+        function loop2() {
+          window.requestAnimationFrame(loop2);
+
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, 300, 300);
+
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 10, 10);
+
+          x = x + 2;
+          y = y + 2;
+        }
+
+        loop2();
+      })();
+    </script>
+
+    <p>
+      X座標とY座標がcanvasの大きさを超えてしまうと、見えない場所に描画されてしまいますので、動いているように見えません。
+    </p>
+
+    <p>canvasの中で動き続けるようにしてみます。</p>
+
+    <p>
+      <canvas id="canvas3"></canvas>
+    </p>
+
+    <script type="application/javascript">
+      (function () {
+        var canvas = document.getElementById("canvas3");
+        canvas.width = canvas.height = 300;
+        var ctx = canvas.getContext("2d");
+
+        var x = 10;
+        var y = 10;
+
+        var diffX = 2;
+        var diffY = 2;
+
+        function loop3() {
+          window.requestAnimationFrame(loop3);
+
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, 300, 300);
+
+          x = x + diffX;
+          if (x > 300) {
+            diffX = -2;
+          } else if (x < 0) {
+            diffX = 2;
+          }
+
+          y = y + diffY;
+          if (y > 300) {
+            diffY = -2;
+          } else if (y < 0) {
+            diffY = 2;
+          }
+
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 10, 10);
+        }
+
+        loop3();
+      })();
+    </script>
+
+    <h1>練習問題</h1>
+
+    <p>次のルールで四角形を移動してください。</p>
+
+    <ul>
+      <li>xが280よりも大きくなったら</li>
+      <ul>
+        <li>xを280に戻す</li>
+        <li>diffXを0にして、それ以上右に行かないようにする</li>
+        <li>diffYを2にして、下に移動するようにする</li>
+      </ul>
+
+      <li>yが280よりも大きくなったら</li>
+      <ul>
+        <li>yを280に戻す</li>
+        <li>diffYを0にして、それ以上下に行かないようにする</li>
+        <li>diffXを-2にして、左に移動するようにする</li>
+      </ul>
+
+      <li>xが10よりも小さくなったら</li>
+      <ul>
+        <li>xを10に戻す</li>
+        <li>diffXを0にして、それ以上左に行かないようにする</li>
+        <li>diffYを-2にして、上に移動するようにする</li>
+      </ul>
+
+      <li>yが10よりも小さくなったら</li>
+      <ul>
+        <li>yを10に戻す</li>
+        <li>diffYを0にして、それ以上上に行かないようにする</li>
+        <li>diffXを2にして、右に移動するようにする</li>
+      </ul>
+    </ul>
+
+    <canvas id="c" style="border: solid;"></canvas>
+
+    <p class="prevnext">
+      <a href="t-7-2.html" class="prev">&laquo; 前</a
+      ><a href="t-7-4.html" class="next">次 &raquo;</a>
+    </p>
+  </body>
+
+  <!-- 練習問題 -->
+
+  <script type="application/javascript">
+    var canvas = document.getElementById("c");
+    canvas.width = canvas.height = 300;
+    var ctx = canvas.getContext("2d");
+
+    var x = 10;
+    var y = 10;
+
+    var diffX = 2;
+    var diffY = 0;
+
+    function loop() {
+      window.requestAnimationFrame(loop);
+
+      // 全体を白で上書きする
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, 300, 300);
+
+      x = x + diffX;
+      y = y + diffY;
+
+      // if (X座標が280よりも大きくなったら)
+      //   xを280に戻す
+      //   diffXを0にして、それ以上右に行かないようにする
+      //   diffYを2にして、下に移動するようにする
+
+      // if (Y座標が280よりも大きくなったら)
+      //   yを280に戻す
+      //   diffYを0にして、それ以上下に行かないようにする
+      //   diffXを-2にして、左に移動するようにする
+
+      // if (X座標が10よりも小さくなったら)
+      //   xを10に戻す
+      //   diffXを0にして、それ以上左に行かないようにする
+      //   diffYを-2にして、上に移動するようにする
+
+      // if (Y座標が10よりも小さくなったら)
+      //   yを10に戻す
+      //   diffYを0にして、それ以上上に行かないようにする
+      //   diffXを2にして、右に移動するようにする
+
+      if (x > 280) {
+        x = 280;
+        diffX = 0;
+        diffY = 2;
+      }
+      if (y > 280) {
+        y = 280;
+        diffY = 0;
+        diffX = -2;
+      }
+      if (x < 10) {
+        x = 10;
+        diffX = 0;
+        diffY = -2;
+      }
+      if (y < 10) {
+        y = 10;
+        diffY = 0;
+        diffX = 2;
+      }
+
+      ctx.fillStyle = "green";
+      ctx.fillRect(x, y, 10, 10);
+    }
+
+    loop();
+  </script>
+</html>

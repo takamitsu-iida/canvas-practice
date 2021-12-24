@@ -28,23 +28,35 @@ var names = [];
 names.push('Smith');
     </pre>
 
-    <p>
-      インデックスは0で始まることに注意してください。
-      したがって、中身が3個の場合、最後の要素のインデックスは2になります。
-      最後の要素は、「配列の長さ - 1」になる、ということを覚えておいてください。
-    </p>
-
-    <p>配列の長さはlengthというプロパティで取得できます。</p>
+    <p>もう一つ追加してみます。</p>
 
     <pre>
-console.log(names.length);  // 3
+names.push('Johnson');
     </pre>
 
-    <h1>問題</h1>
+    <p>names配列は'Smith', 'Johnson'の順に格納されています。</p>
 
-    <p>要素の数が分からない配列numbersがあります。</p>
-    <p>配列の長さを調べて、表示してください。</p>
-    <p>配列の最後に何が入っているか、表示してください。</p>
+    <p>最後の要素を削除するには、pop()関数を使います。</p>
+
+    <pre>
+names.pop();
+    </pre>
+
+    <p>names配列の最後の要素が削除され、'Smith'だけになっています。</p>
+
+    <p>他にも配列を操作する関数はいくつかありますが、push()で最後に追加、pop()で最後を削除、を覚えておけばなんとかなります。</p>
+
+    <h1>練習問題</h1>
+
+    <p>NAMES配列にはアメリカ人に多い名字のトップ１０が格納されています。</p>
+
+    <pre>
+      var NAMES = ['Smith', 'Johnson', 'Williams', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor'];
+    </pre>
+
+    <p>空っぽのnames配列にNAMES配列の中身を順番に入れてください。</p>
+
+    <p>names配列はトップ３だけにしたいので、後ろ７個を削除してください。</p>
 
     <p class="prevnext">
       <a href="t-4-1.html" class="prev">&laquo; 前</a
@@ -52,50 +64,38 @@ console.log(names.length);  // 3
     </p>
   </body>
 
+  <!-- 練習問題 -->
+
   <script type="application/javascript">
-    let colors = ["Red", "Green", "Blue"];
-    console.log(colors);
 
-    // 末尾に追加
-    colors.push("Black");
-    console.log(colors);
+    var NAMES = ['Smith', 'Johnson', 'Williams', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor'];
+    var names = [];
 
-    // 先頭に追加
-    colors.unshift("White");
-    console.log(colors);
+    // 空っぽのnames配列にNAMES配列の中身を順番に入れてください
 
-    // 更新
-    colors[1] = "Aka";
-    console.log(colors);
+    // このように書いていくと、長くなるだけです
+    names.push(NAMES[0]);
+    names.push(NAMES[1]);
+    names.push(NAMES[2]);
 
-    // 指定した位置に1つ以上の値を挿入
-    let insertArr = ["a", "b", "c"];
-    insertArr.splice(1, 0, "D");
-    console.log(insertArr);
+    // for文を使うといいでしょう
 
-    // 複数挿入
-    insertArr.splice(2, 0, "X", "Y", "Z");
-    console.log(insertArr);
+    // for (let i=0; i < NAMES.length; i++) {}
 
-    // 指定した位置から削除
-    insertArr.splice(2, 2);
-    console.log(insertArr);
 
-    // 結合
-    let arr1 = ["a", "b", "c"];
-    let arr2 = ["d", "e", "f"];
-    let mergedArr = arr1.concat(arr2);
-    console.log(mergedArr);
-    console.log(arr1);
-    console.log(arr2);
+    // names配列はトップ３だけにしたいので、後ろ７個を削除してください
 
-    // 先頭を削除
-    let arr3 = ["a", "b", "c", "d"];
-    arr3.shift();
-    console.log(arr3);
+    // 7回書けばいいのですが、長くなるだけなのでfor文を使いましょう
+    names.pop();
+    names.pop();
+    names.pop();
+    names.pop();
+    names.pop();
+    names.pop();
+    names.pop();
 
-    // 末尾を削除
-    arr3.pop();
-    console.log(arr3);
+    // for (let i=0;i < 7; i++) {}
+
+    console.log(names);
   </script>
 </html>
