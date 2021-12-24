@@ -20,17 +20,17 @@ loop();  // 一度実行すれば、あとは繰り返しloop()が実行され�
     </pre>
 
     <p>
-      描画するものが複数あって、バラバラな動きをするときには、描画処理の部分が複雑になりがちです。
+      描画するものが複数あって、それらがバラバラな動きをするときには、描画処理の部分が複雑になりがちです。
     </p>
 
     <p>
-      そういったときには、描画処理を持ったオブジェクトを作ると、短く、見やすく書けます。
+      そういったときには描画処理を持ったオブジェクトを作ると、短く、見やすいプログラムになります。
     </p>
 
     <p>たとえば四角形を描く機能を持ったオブジェクトを作ってみます。</p>
 
     <p>
-      <canvas id="canvas1" style="border: solid;"></canvas>
+      <canvas id="canvas1" style="border: solid"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -106,7 +106,7 @@ loop1();
     </pre>
 
     <p>
-      rect1というオブジェクトの中にstep()関数を作ったので、ループの中ではそれを呼び出すだけですんでいます。
+      rect1というオブジェクトの中にstep()関数を作ったので、アニメーションループの中ではそれを呼び出すだけですんでいます。
     </p>
 
     <p>
@@ -114,7 +114,7 @@ loop1();
     </p>
 
     <p>
-      <canvas id="canvas2" style="border: solid;"></canvas>
+      <canvas id="canvas2" style="border: solid"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -253,7 +253,7 @@ loop2();
     </p>
 
     <p>
-      <canvas id="canvas3" style="border: solid;"></canvas>
+      <canvas id="canvas3" style="border: solid"></canvas>
     </p>
 
     <script type="application/javascript">
@@ -330,7 +330,9 @@ loop2();
 
     <h1>練習問題</h1>
 
-    <p>背景を黒にして、各ステップで半透明の黒で上書きすると尾を引くようなエフェクトになります。</p>
+    <p>
+      背景を黒にして、各ステップで半透明の黒で上書きすると尾を引くようなエフェクトになります。
+    </p>
 
     <pre>
 var rect1 = new Rect(10, 10, "green");
@@ -342,9 +344,14 @@ var rect5 = new Rect(210, 10, "green");
 
     <p>全部で5個のオブジェクトを作成しています。</p>
 
-    <p>var rects = [];として空っぽの配列を作って、そこにこれらオブジェクトを格納してください。</p>
+    <p>
+      var rects =
+      [];として空っぽの配列を作って、そこにこれらオブジェクトを格納してください。
+    </p>
 
-    <p>ループの中では、rects配列からfor文でひとつずつ取り出してstep()関数を実行してください。</p>
+    <p>
+      ループの中では、rects配列からfor文でひとつずつ取り出してstep()関数を実行してください。
+    </p>
 
     <canvas id="c" style="border: solid"></canvas>
 
